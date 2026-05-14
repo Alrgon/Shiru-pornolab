@@ -95,9 +95,11 @@ export default new class PornoLab extends AbstractSource {
       ? torrent.downloadLink
       : `${BASE_URL}/${torrent.downloadLink.replace(/^\.?\/?/, '')}`
 
+    const proxyLink = `http://127.0.0.1:5000/proxy?b64url=${encodeURIComponent(btoa(downloadLink))}&cookie=${encodeURIComponent(this.settings.cookie || '')}&ua=${encodeURIComponent(this.settings.userAgent || '')}`
+
     return {
       title: torrent.title,
-      link: downloadLink,
+      link: proxyLink,
       seeders: torrent.seeders,
       leechers: torrent.leechers,
       downloads: torrent.downloads,

@@ -15,9 +15,9 @@ def proxy():
         return "Missing b64url parameter", 400
     url = base64.b64decode(b64url).decode('utf-8')
 
-    # Получаем куки и User-Agent от плагина Shiru
-    user_agent = request.headers.get('X-Proxy-User-Agent', '')
-    cookie = request.headers.get('X-Proxy-Cookie', '')
+    # Получаем куки и User-Agent от плагина Shiru (через заголовки ИЛИ параметры)
+    user_agent = request.headers.get('X-Proxy-User-Agent') or request.args.get('ua', '')
+    cookie = request.headers.get('X-Proxy-Cookie') or request.args.get('cookie', '')
 
     headers = {
         'User-Agent': user_agent,
@@ -38,7 +38,7 @@ def proxy():
         return Response(
             resp.content, 
             status=resp.status_code, 
-            content_type=resp.headers.get('content-type', 'text/html')
+            headers={'Content-Type': resp.headers.get('content-type', 'application/octet-stream')}
         )
     except Exception as e:
         return str(e), 500
