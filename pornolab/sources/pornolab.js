@@ -103,7 +103,7 @@ export default new class PornoLab extends AbstractSource {
       seeders: torrent.seeders,
       leechers: torrent.leechers,
       downloads: torrent.downloads,
-      hash: '', // PornoLab doesn't expose infohash in search results
+      hash: torrent.downloadLink.match(/t=(\d+)/)?.[1] || btoa(torrent.title), // Unique hash for React rendering
       size: torrent.size,
       accuracy: 'low',
       type: batch ? 'batch' : undefined,

@@ -28,11 +28,6 @@ def proxy():
         print(f"Fetching URL: {url}")
         # Делаем настоящий запрос к PornoLab
         resp = requests.get(url, headers=headers, timeout=15)
-        
-        # СОХРАНЯЕМ ОТВЕТ В ФАЙЛ ДЛЯ ПРОВЕРКИ
-        with open("debug.html", "wb") as f:
-            f.write(resp.content)
-        print("Response saved to debug.html! Please open it to see what PornoLab returned.")
 
         # Отдаем сырой HTML (байты) обратно в плагин
         return Response(
