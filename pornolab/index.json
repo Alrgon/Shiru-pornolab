@@ -6,6 +6,7 @@
     "main": "sources/pornolab",
     "update": "gh:Alrgon/Shiru-pornolab/pornolab",
     "type": "torrent",
+    "bypassCORS": true,
     "nsfw": true,
     "speed": "slow",
     "accuracy": "low",

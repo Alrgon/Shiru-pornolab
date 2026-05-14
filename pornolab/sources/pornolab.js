@@ -185,13 +185,13 @@ export default new class PornoLab extends AbstractSource {
    */
   async validate () {
     try {
-      // We only check that the site is reachable.
-      // Cookie header is a forbidden header in browser fetch and is silently ignored,
-      // so we cannot reliably verify login state here. If the cookie is wrong,
-      // searches will simply return no results.
       if (!this.settings.cookie) return false
       const res = await this.#fetch(`${BASE_URL}/index.php`)
-      return res.ok
+      if (!res.ok) return false
+      const buffer = await res.arrayBuffer()
+      const html = decodeWindows1251(buffer)
+      // Check if we are logged in by looking for a logout link
+      return html.includes('logout')
     } catch {
       return false
     }
