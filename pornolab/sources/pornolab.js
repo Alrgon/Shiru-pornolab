@@ -57,15 +57,14 @@ export default new class PornoLab extends AbstractSource {
    * @returns {Promise<Response>}
    */
   #fetch(url) {
+    const proxyUrl = `http://127.0.0.1:5000/proxy?url=${encodeURIComponent(url)}`
+    
     const headers = {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+      'X-Proxy-User-Agent': this.settings.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+      'X-Proxy-Cookie': this.settings.cookie || ''
     }
-    if (this.settings.cookie) {
-      // Note: 'Cookie' is a forbidden header in browser fetch API and is silently ignored.
-      // Shiru/Electron may or may not support it depending on context.
-      headers['Cookie'] = this.settings.cookie
-    }
-    return fetch(url, {
+
+    return fetch(proxyUrl, {
       headers,
       redirect: 'follow'
     })
