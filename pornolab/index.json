@@ -28,17 +28,38 @@
         "key": "categories",
         "label": "Categories",
         "description": "Категории для поиска на PornoLab. По умолчанию включены все хентай/аниме категории.",
-        "default": ["1679", "1740", "1834", "1752", "1711"],
+        "default": [
+          "1679",
+          "1740",
+          "1834",
+          "1752",
+          "1711"
+        ],
         "options": [
-          { "label": "Хентай: основной", "value": "1679" },
-          { "label": "Хентай: DVD и HD", "value": "1740" },
-          { "label": "Хентай: ролики 2D", "value": "1834" },
-          { "label": "Хентай: ролики 3D", "value": "1752" },
-          { "label": "Мультфильмы", "value": "1711" }
+          {
+            "label": "Хентай: основной",
+            "value": "1679"
+          },
+          {
+            "label": "Хентай: DVD и HD",
+            "value": "1740"
+          },
+          {
+            "label": "Хентай: ролики 2D",
+            "value": "1834"
+          },
+          {
+            "label": "Хентай: ролики 3D",
+            "value": "1752"
+          },
+          {
+            "label": "Мультфильмы",
+            "value": "1711"
+          }
         ]
       }
     ],
     "description": "Полуприватный российский торрент-трекер с хентай/аниме контентом. Требуется авторизация через cookie. Поиск может быть менее точным из-за формата форума.",
-    "icon": "iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAMgSURBVGiB7ZlNaBNBFMd/s9lN0qRJk9YPLIoHL4IHD4IXUfAgeFBQQVBQUKgHQdCDB0UPnhQRL4IHQRBEQdCDIAgeBMGDoIiIiqAgKIiIiNR+JE2TbHYdD9ttt5tks9lkE0r+l5mdmX3/38zszJsBqKKKCsb4E88j+72PAJuAI8BqwJfKlgWmgN+px7/ARuBYsYQSoKUMJMYLXgr1AlcyFaov24Rl4m06UACsBz4tJJj0AyeAzVn4KcAi8EepSQU4n+2lGqDFKWEa+Am0ZCl/Ib2TvwYcBwbyKeQHWMkSB6sE1jspvFLwCiI9BvAJfJ0ALuqBKeDdQoKrG+eAD4BLPF5HFTtJXA7MAMiowFHnNbgx3fxeRKY9luokYAx4H82RA0CQwEXGAKGvZapALQCPE6jMQJC98VlLWqBy8BbPxXBOBB3X3AAWJ5LUdKnfieAi3WnNYgj7gDLHOQ1MAAcdLJ5f5L3C9AjKJkzxG3jcuCaFbiNFg5MAEM6k5/A6YT3FXcFboNDHiR1CaA6RwmxSkgaJMXAlFgyC7Sn6ABOA0cBj45VYIl7VYHfNVBF3OAj7Xmb4EjZFHCMNjuV5wjYIbLaJqH5kJfCcXB7KQAF4E3mjK3gWW+y3UrUF+ALpVpOuAgCJJPy2FTJAnmyNPpN2NxHJh3i+heIBVJLvSN9IYO5b7FBIifgmRVJn6iOT6BYg7r9Fv5xqcAg8RU4Kp9HXDhvEd6kpWRXk/hYaJZ96+ooADzhewg/MCSP/p8AQs0Yt0a5lFACdUMW4KbdRKxVugH5io5k0yxGO6U4aBIdXpg0DUcAm9Saa4SdIjUQbZadS0Cb8J0NnlDJOmOp1AvgIHiGX+3VrAjm1TxXy2FkHNbqJEjuU/AkVy0lwjgOHDHAWnUq7kNpBYRe+sUUCbx3p9xAjBFsEpJLiM3F+MAUMVJUxJY7yFu0qjPRcZKEkgLwD9zzwmFLhCnwROVIJ4A/AJOKq5fAhIKS8XQrqAfcR9YIzfyksFvK9B+G3gD7FGcR5/p9D/xFJi1VhQAAAAAElFTkSuQmCC"
+    "icon": "AAABAAEAEBAAAAEAGABoAwAAFgAAACgAAAAQAAAAIAAAAAEAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+8CKPoCKPoCKPoCKPoCKPoCKPoCKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+8CKPoCKPoCKPoCKPoCKPoCKPoCKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7++6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7++6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7++6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/j4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   }
 ]
