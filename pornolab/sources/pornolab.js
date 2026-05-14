@@ -189,8 +189,8 @@ export default new class PornoLab extends AbstractSource {
       if (!res.ok) return false
       const buffer = await res.arrayBuffer()
       const html = decodeWindows1251(buffer)
-      // Check if we are logged in by looking for a logout link
-      return html.includes('logout')
+      // Check if we are logged in by verifying the login form is absent
+      return !html.includes('name="login_username"')
     } catch {
       return false
     }
