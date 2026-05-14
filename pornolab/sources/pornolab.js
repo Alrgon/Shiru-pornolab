@@ -57,12 +57,17 @@ export default new class PornoLab extends AbstractSource {
    * @returns {Promise<Response>}
    */
   #fetch (url) {
-    const headers = {}
+    const headers = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+    }
     if (this.settings.cookie) {
+      // Note: 'Cookie' is a forbidden header in browser fetch API and is silently ignored.
+      // Shiru/Electron may or may not support it depending on context.
       headers['Cookie'] = this.settings.cookie
     }
     return fetch(url, {
       headers,
+      credentials: 'omit',
       redirect: 'follow'
     })
   }
@@ -180,12 +185,13 @@ export default new class PornoLab extends AbstractSource {
    */
   async validate () {
     try {
+      // We only check that the site is reachable.
+      // Cookie header is a forbidden header in browser fetch and is silently ignored,
+      // so we cannot reliably verify login state here. If the cookie is wrong,
+      // searches will simply return no results.
+      if (!this.settings.cookie) return false
       const res = await this.#fetch(`${BASE_URL}/index.php`)
-      if (!res.ok) return false
-      const buffer = await res.arrayBuffer()
-      const html = decodeWindows1251(buffer)
-      // Check if we are logged in by looking for a logout link
-      return html.includes('logout')
+      return res.ok
     } catch {
       return false
     }
