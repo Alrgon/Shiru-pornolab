@@ -36,12 +36,6 @@ export default new class PornoLab extends AbstractSource {
     // Build the search term — join multiple titles with spaces, try the first one
     let searchTerms = titles.slice(0, 3).join(' ')
 
-    // Add episode number for single episode searches
-    if (episode && !batch) {
-      const ep = String(episode).padStart(2, '0')
-      searchTerms += ` ${ep}`
-    }
-
     // Build category params
     const categories = this.settings.categories?.length ? this.settings.categories : DEFAULT_CATEGORIES
     const categoryParams = categories.map(c => `f[]=${c}`).join('&')

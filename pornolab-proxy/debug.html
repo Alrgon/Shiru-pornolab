@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<title>Трекер</title>
+
+<link rel="stylesheet" href="//static.pornolab.net/templates/default/css/main.css?v=47" type="text/css">
+<link rel="stylesheet" href="//static.pornolab.net/templates/default/css/theme.css?v=47" type="text/css">
+<link rel="shortcut icon" href="//static.pornolab.net/favicon.ico" type="image/x-icon">
+
+<link rel="search" type="application/opensearchdescription+xml" title="Поиск на Pornolab.net" href="//static.pornolab.net/opensearch.xml">
+
+<link rel="stylesheet" href="//static.pornolab.net/templates/default/css/fontawesome.css" type="text/css">
+<link rel="stylesheet" href="//static.pornolab.net/templates/default/css/font-awesome-animation.min.css" type="text/css">
+
+<script type="text/javascript" src="//static.pornolab.net/js/jquery.pack.js?v=28"></script>
+
+<script type="text/javascript" src="//static.pornolab.net/js/main.js?v=28"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        initPostVideos();
+    });
+
+    function initPostVideos(root) {
+        // root — контейнер, если посты подгружаются аяксом
+        var container = document;
+        var nodes = container.querySelectorAll('var.postVideo');
+
+        nodes.forEach(function (node) {
+            var url = node.getAttribute('title');
+            if (!url) return;
+
+            var isHls = /\.m3u8(\?|$)/i.test(url);
+
+            var video = document.createElement('video');
+            // сохраняем старые классы + добавляем embded-video
+            video.className = node.className + ' embded-video';
+            video.controls = true;
+            video.preload = 'metadata';
+
+            if (isHls) {
+                // HLS
+                if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Safari / iOS
+                    // video.src = url;
+                    var hls = new Hls();
+                    hls.loadSource(url);
+                    hls.attachMedia(video)
+                } else if (window.Hls && Hls.isSupported()) {
+                    // Chrome / Firefox / Edge
+                    var hls = new Hls();
+                    hls.loadSource(url);
+                    hls.attachMedia(video);
+                } else {
+                    // Совсем старый браузер — хотя бы ссылка
+                    var link = document.createElement('a');
+                    link.href = url;
+                    link.textContent = 'Скачать видео';
+                    node.parentNode.replaceChild(link, node);
+                    return;
+                }
+            } else {
+                // Обычное видео (mp4/webm)
+                video.src = url;
+            }
+
+            node.parentNode.replaceChild(video, node);
+        });
+    }
+</script>
+
+<script>
+	function is_touch_device() {
+		return (('ontouchstart' in window) ||
+				(navigator.maxTouchPoints > 0) ||
+				(navigator.msMaxTouchPoints > 0));
+	}
+</script>
+<script type="text/javascript">
+var BB            = {};
+var BB_ROOT       = "./";
+var cookieDomain  = ".pornolab.net";
+var cookiePath    = "/forum/";
+var cookieSecure  = 0;
+var cookiePrefix  = "bb_";
+var LOGGED_IN     = 1;
+var InfoWinParams = 'width=780,height=510,resizable=yes';
+
+var user = {
+	opt_js: {"only_new":0,"h_flag":0,"h_av":0,"h_rnk_i":0,"h_post_i":0,"i_aft_l":0,"h_smile":0,"h_sig":0,"h_priv":0,"h_colors":0,"sp_op":0,"tr_tm":0,"tr_rp":0,"tr_sd":0,"h_cat":"","h_tsp":0,"h_acomp":0,"h_highl":0,"s_f_f":0,"s_f_o":0},
+
+	set: function(opt, val, days, reload) {
+		this.opt_js[opt] = val;
+		setCookie('opt_js', $.toJSON(this.opt_js), days);
+		if (reload) {
+			window.location.reload();
+		}
+	}
+}
+
+$(function(){
+	$('a.dl-stub').each(function(){
+		var $a = $(this);
+		var href = $a.attr('href');
+		var t_id = href.slice( href.lastIndexOf('=')+1 );
+		var event = ($.browser.opera) ? 'mouseover' : 'mousedown';
+		$a.bind(event, function(){
+			setCookie('bb_dl', t_id, 'SESSION')
+		});
+		/*$a.click(function(){
+			$('#dl-form').attr('action', href);
+			$('#dl-form').submit();
+			return false;
+		});*/
+	});
+		$('form.tokenized').append('<input type="hidden" name="form_token" value="a0fd71cec1994edced77792fb38dd043" />');
+	ajax.form_token = 'a0fd71cec1994edced77792fb38dd043';
+		
+	$('.sp-open-all').click(function () {
+		var fold = $(this).hasClass('sp-open-uncollapsed');
+		$('div.sp-head').filter( function(){ return $(this).hasClass('unfolded') ? fold : !fold } ).click();
+		$(this).toggleClass('sp-open-uncollapsed');
+
+		if (!$(this).hasClass('sp-open-uncollapsed')) {
+			var $_this = $(this);
+			setTimeout(function() {
+				const y = $_this.offset().top - 100;
+				window.scrollTo({top: y, behavior: 'smooth'});
+			}, 200);
+		}
+		return false;
+	});
+});
+
+var ajax = new Ajax('ajax.php', 'POST', 'json');
+
+function getElText (e)
+{
+	var t = '';
+	if (e.textContent !== undefined) {
+		t = e.textContent;
+	}
+	else if (e.innerText !== undefined) {
+		t = e.innerText;
+	}
+	else {
+		t = jQuery(e).text();
+	}
+	return t;
+}
+function escHTML (txt) {
+	return txt.replace(/</g, '&lt;');
+}
+function cfm (txt)
+{
+	return window.confirm(txt);
+}
+function post2url (url, params) {
+	params = params || {};
+	var f = document.createElement('form');
+	f.setAttribute('method', 'post');
+	f.setAttribute('action', url);
+	params['form_token'] = 'a0fd71cec1994edced77792fb38dd043';
+	for (var k in params) {
+		var h = document.createElement('input');
+		h.setAttribute('type', 'hidden');
+		h.setAttribute('name', k);
+		h.setAttribute('value', params[k]);
+		f.appendChild(h);
+	}
+	document.body.appendChild(f);
+	f.submit();
+	return false;
+}
+</script>
+
+<!--[if lte IE 6]><script type="text/javascript">
+$(ie6_make_clickable_labels);
+
+$(function(){
+	$('div.menu-sub').prepend('<iframe class="ie-fix-select-overlap"></iframe>'); // iframe for IE select box z-index issue
+	Menu.iframeFix = true;
+});
+</script><![endif]-->
+
+
+<!--[if gte IE 7]><style type="text/css">
+input[type="checkbox"] { margin-bottom: -1px; }
+</style><![endif]-->
+
+<!--[if lte IE 6]><style type="text/css">
+.forumline th { height: 24px; padding: 2px 4px; }
+.menu-sub iframe.ie-fix-select-overlap { display: none; display/**/: block; position: absolute; z-index: -1; filter: mask(); }
+</style><![endif]-->
+
+<!--[if IE]><style type="text/css">
+.post-hr { margin: 2px auto; }
+.fieldsets div > p { margin-bottom: 0; }
+</style><![endif]-->
+
+<style type="text/css">
+img.t-spacer { width: 142px; margin-top: -1px; }
+.hidden, .menu-sub, #ajax-loading, #ajax-error, var.ajax-params, .sp-title, .q-post { display: none; }
+#adriver-240x120 { width: 240px; height: 120px; padding-bottom: 2px; margin-right: -2px; }
+#adriver-468x60, #pr-468x60  { width: 468px; height: 60px; }
+#dd-900x90 { width: 980px; }
+@media screen and (max-width: 1100px) {
+	#dd-900x90, #dd-900x90 > object { width: 620px; }
+}
+#latest_news table { width: 100%; }
+#sidebar1_wrap { margin-top: -4px; }
+/* temp */
+
+
+/* temp end */
+</style>
+
+</head>
+
+<body>
+
+<script type="text/javascript" src="//static.pornolab.net/js/bottom_message.js?v=28"></script>
+
+<style type="text/css">
+#fs-nav-ul .b { font-weight: bold; }
+#fs-nav-ul li, #fs-nav-close { cursor: pointer; }
+#fs-nav-ul span.f:hover, #fs-nav-close:hover { color: blue; background: #DEE2E4; }
+#fs-nav-list { border: 3px double #9AA7AD; background: #EFEFEF; padding: 8px; max-height: 500px; overflow: auto; }
+#fs-sel-cat { min-width: 250px; max-width: 300px; }
+#fs-sel-cat option.cat-title { font-weight: bold; color: #005A88; background: #F5F5F5; }
+</style>
+
+<script type="text/javascript">
+var FSN = {
+	fs_all      : '',
+	fs_og       : [],
+	fs_lb       : [],
+	show_fs_nav : true,
+	sel_width   : null,
+	scroll      : $.browser.mozilla,
+
+	build_nav: function() {
+
+		var $fieldset = $('fieldset#fs');
+		var $select = $('select', $fieldset);
+		var $optgroup = $('optgroup', $select);
+
+		$('legend', $fieldset).empty().append( $('#fs-nav-legend').contents() );
+		FSN.show_fs_nav = !($.browser.msie && parseFloat($.browser.version) <= 6);
+
+		$optgroup.each(function(i){
+			var $og = $(this);
+			$og.attr({ id: 'og-'+i });
+			FSN.fs_og[i] = $(this).html();
+			FSN.fs_lb[i] = $(this).attr('label');
+			$('#fs-sel-cat').append('<option class="cat-title" value="'+ i +'">&nbsp;&nbsp;&middot;&nbsp;'+ FSN.fs_lb[i] +'&nbsp;</option>\n');
+			if (FSN.show_fs_nav) {
+				$('<li><span class="b">'+ FSN.fs_lb[i] +'</span>\n<ul id="nav-c-'+ i +'"></ul>\n</li>').appendTo('#fs-nav-ul').click(function(){
+					if (FSN.scroll) {
+						$select.scrollTo('#og-'+i);
+					}
+				});
+				$('option', $og).each(function(){
+					var $op = $(this);
+					if ($op[0].className) {
+						$('<li><span class="f">'+ $op.html() +'</span>\n</li>').appendTo('#nav-c-'+ i).click(function(e){
+							e.stopPropagation();
+							if (FSN.scroll) {
+								$select.scrollTo( '#'+$op.attr('id'), { duration:300 } ).scrollTo( '-=3px' );
+							}
+							$('option', $select).prop({ selected: 0 });
+							$('#'+$op.attr('id')).prop({ selected: 1 }).nextUntil(".root_forum").prop({ selected: 1 });
+							$('#fs-nav-list').fadeOut();
+						});
+					}
+				});
+			}
+		});
+
+		if (FSN.show_fs_nav) {
+			$('#fs-nav-menu').show();
+			$('#fs-nav-ul').treeview({ collapsed: false });
+			// фикс для FF2, чтобы меню не выстраивалось лесенкой
+			if ($.browser.mozilla && parseFloat($.browser.version) <= 1.8) {
+				$('#fs-nav-list ul').after('<div style="margin-top: 1px;"></div>');
+			}
+			// temp fix for "+" while { collapsed: false }
+			$('#fs-nav-ul').find('div.expandable-hitarea, div.lastExpandable-hitarea').each(function(){
+				$(this).removeClass('expandable-hitarea').addClass('collapsable-hitarea').parent().removeClass('expandable').addClass('collapsable');
+				if ($(this).hasClass('lastExpandable-hitarea')) {
+					$(this).removeClass('lastExpandable-hitarea').addClass('lastCollapsable-hitarea').parent().removeClass('lastExpandable').addClass('lastCollapsable');
+				}
+			});
+		}
+		else {
+			$('#fs-nav-menu').remove();
+		}
+
+		$('#fs-sel-cat').bind('change', function(){
+			var i = $(this).val();
+			if (FSN.sel_width == null) {
+				FSN.sel_width = $select.width() + 4;
+			}
+			// опера не понимает <optgroup> при популяции селекта [http://dev.jquery.com/ticket/3040]
+			if ($.browser.opera) {
+				if (i == 'all') {
+					$select.empty().append('<option id="fs--1" value="-1">&nbsp;Все имеющиеся</option>\n');
+					$.each(FSN.fs_og, function(i, v){
+					 $select.append( $(document.createElement('optgroup')).attr('label', FSN.fs_lb[i]).append(FSN.fs_og[i]) );
+					});
+				}
+				else {
+					$select.empty().append( $(document.createElement('optgroup')).attr('label', FSN.fs_lb[i]).append(FSN.fs_og[i]) );
+				}
+			}
+			else {
+				if (i == 'all') {
+					var fs_html = FSN.fs_all;
+				}
+				else {
+					var fs_html = '<optgroup label="'+ FSN.fs_lb[i] +'">'+ FSN.fs_og[i] +'</optgroup>';
+				}
+				$select.html(fs_html).focus();
+			}
+			if (i == 'all') {
+				$('#fs-nav-menu').show();
+			}
+			else {
+				$('#fs-nav-menu').hide();
+			}
+			$select.width(FSN.sel_width);
+		});
+
+		FSN.fs_all = $select.html();
+	}
+};
+
+$(function(){
+	FSN.build_nav();
+});
+</script>
+
+<div class="menu-sub" id="fs-nav-list">
+	<div class="tRight"><span id="fs-nav-close" class="med" onclick="$('#fs-nav-list').hide();"> [ закрыть ] </span></div>
+	<ul id="fs-nav-ul" class="tree-root"></ul>
+</div>
+
+<div id="fs-nav-legend" style="display: none;">
+	<select id="fs-sel-cat"><option value="all">&nbsp;Выбрать категорию...&nbsp;</option></select>
+	<span id="fs-nav-menu" style="display: none;">&middot;&nbsp;<a class="menu-root" href="#fs-nav-list">перейти к разделу</a></span>
+</div>
+
+
+<!--cse-->
+<script type="text/javascript">
+$(function(){
+	// $('#cse-search-btn, #cse-search-btn-top').click(function(){
+	// 	var text_match_input_id = $(this).attr('href');
+	// 	var text_match = $('#'+text_match_input_id).val();
+	// 	if (text_match == '') {
+	// 		$('#'+text_match_input_id).addClass('hl-err-input').focus();
+	// 		return false;
+	// 	}
+	// 	$('#cse-text-match').val( text_match );
+	// 	$('#cse-submit-btn').click();
+	// 	return false;
+	// });
+
+	$('#quick-search').submit(function(){
+		var action = $('#search-action').val();
+		var txt = $('#search-text').val();
+		if (txt=='поиск...' || txt == '') {
+			$('#search-text').val('').addClass('hl-err-input').focus();
+			return false;
+		}
+		// if (action == 'cse') {
+		// 	$('#cse-search-btn-top').click();
+		// 	return false;
+		// }
+		// else {
+		// 	$(this).attr('action', action);
+		// }
+        $(this).attr('action', action);
+	});
+
+
+    // Function to get search text based on the clicked button's href
+    function getSearchText(button) {
+        var text_match_input_id = button.attr('href');
+        return $('#' + text_match_input_id).val();
+    }
+
+    // Google Search
+    $('#cse-search-btn').click(function(e) {
+        e.preventDefault();
+        var searchText = getSearchText($(this));
+        var googleSearchUrl = 'https://www.google.com/search?q=site:pornolab.net+' + encodeURIComponent(searchText);
+        window.open(googleSearchUrl, '_blank');
+    });
+
+    // DuckDuckGo Search
+    $('#ddg-search-btn').click(function(e) {
+        e.preventDefault();
+        var searchText = getSearchText($(this));
+        var duckDuckGoSearchUrl = 'https://duckduckgo.com/?q=site:pornolab.net+' + encodeURIComponent(searchText);
+        window.open(duckDuckGoSearchUrl, '_blank');
+    });
+});
+</script>
+<div id="cse-form-holder" style="display: none;">
+<form action="search_cse.php" id="cse-search-box" accept-charset="utf-8">
+	<input type="hidden" name="cx" value="9187e436392724367" />
+	<input type="hidden" name="cof" value="FORID:9" />
+	<input type="hidden" name="ie" value="utf-8" />
+	<input type="text" name="q" size="60" value="" id="cse-text-match" />
+	<input type="submit" name="sa" value="Поиск в Google" id="cse-submit-btn" />
+</form>
+
+</div>
+<!--/cse-->
+
+<!-- <form method="post" action="" id="dl-form" style="display: none;"></form> -->
+
+<script>
+	ajax.dark_theme = function(mode) {
+		ajax.exec({
+			action   : 'dark_theme',
+			mode     : mode
+		});
+	};
+	ajax.callback.dark_theme = function(data) {
+		if (data.info) {
+			window.location.reload();
+		}
+	};
+</script>
+
+
+
+
+<div id="body_container">
+
+<!--
+    <div class="bypass-alert">
+        <div class="dCenter nowrap">
+        <a href="//pornolab.net/forum/viewtopic.php?t=2324898" style="color: red !important;">Просьба о помощи с переоформлением раздач</a>
+        </div>
+    </div>
+-->
+    <div class="bypass-alert" style="display: none;">
+        <div class="dCenter">
+			<a href="//pornolab.net/forum/viewtopic.php?t=3114884" style="color: darkred;">Почтовые сервисы mail.ru добавлены в черный список на форуме</a>
+            <a href="javascript: void(0)" onclick="store.set('bypass-alert-hide', 1); $('.bypass-alert').hide();" style="font-size: 10px; position: relative; top: -5px; margin-left: 10px; text-decoration: none;">[ Cкрыть ]</a>
+        </div>
+        <script>
+            $(function(){
+                if (!store.get('bypass-alert-hide')) {
+                    $('.bypass-alert').show();
+                }
+            });
+        </script>
+    </div>
+
+
+<!--************************************************************************-->
+<!--=COMMON_HEADER==========================================================-->
+
+<script type="text/javascript">
+if (top != self) {
+	allowed_top = /translate/i;
+	if (top.location.hostname != self.location.hostname && !top.location.hostname.match(allowed_top)) {
+		alert('in frame!'+'\n\n'+top.location.hostname);
+		top.location.href = self.document.location;
+	}
+}
+</script>
+
+
+
+<div id="pl-speedbar" style="display: block;"><table cellspacing="0" width="100%"><tr>
+	<!--<td style="padding: 1px 0 0 12px;"><img src="//static.pornolab.net/002/play-me.gif" width="16" height="16" alt="" /></td>-->
+	<td style="padding: 14px 12px 15px 12px; text-align: left;"><b id="pl-speedbar-a">&nbsp;</b></td>
+</tr></table></div>
+<script type="text/javascript">
+$(document).ready(function(){
+	var i    = 0;
+	var t    = 'target="_blank"';
+	var bn   = [];
+
+//			<a href="//pornolab.net/forum/viewtopic.php?t=2253962" style="color: blue;">Если не можешь залогиниться, почисти в браузере кэш и куки. Не пользуйся для входа appspot.com и адресом с dl. в начале !</a>
+//	bn[i] = '<a href="http://www.swing-zone.com?utm_source=plab&utm_medium=sbar&utm_campaign=swingers_and_sexwifes_ru" target="_blank" style="color: red; font-size: 11pt;">Свингеры и сексвайф</a>'; i++;
+//	bn[i] = '<a href="http://www.swing-zone.com?utm_source=plab&utm_medium=sbar&utm_campaign=swingers_and_sexwifes_en" target="_blank" style="color: blue; font-size: 11pt;">Свингеры и sexwife</a>'; i++;
+//	bn[i] = '<a href="http://www.swing-zone.com?utm_source=plab&utm_medium=sbar&utm_campaign=sexwifes_ru_and_swingers" target="_blank" style="color: green; font-size: 11pt;">Сексвайф и свингеры</a>'; i++;
+//	bn[i] = '<a href="http://www.swing-zone.com?utm_source=plab&utm_medium=sbar&utm_campaign=sexwifes_en_and_swingers" target="_blank" style="color: darkblue; font-size: 11pt;">Sexwife и свингеры</a>'; i++;
+//	bn[i] = '<a href="http://www.swing-zone.com?utm_source=plab&utm_medium=sbar&utm_campaign=real_sex_dating" target="_blank" style="color: red; font-size: 11pt;">Реальные Секс-знакомства</a>'; i++;
+//	bn[i] = '<a href="http://www.swing-zone.com?utm_source=plab&utm_medium=sbar&utm_campaign=sex_dating_swingers" target="_blank" style="color: blue; font-size: 11pt;">Секс-знакомства свингеров</a>'; i++;
+//	bn[i] = '<a href="http://www.swing-zone.com?utm_source=plab&utm_medium=sbar&utm_campaign=sex_dating_sexwifes" target="_blank" style="color: green; font-size: 11pt;">Секс-знакомства с сексвайф</a>'; i++;
+//	bn[i] = '<a href="http://www.onlyall.net/webasyst/category/konyak-opredelennogo-vozrasta/?promo_id=356754" target="_blank" style="color: red; font-size: 11pt;">Коньяк от 3-х лет до 60-ти лет</a>'; i++;
+//	bn[i] = '<a href="http://www.onlyall.net/webasyst/category/cognaq/?promo_id=356754" target="_blank" style="color: blue; font-size: 11pt;">Молдавский коньяк от 3-х лет до 60-ти лет</a>'; i++;
+//	bn[i] = '<a href="http://www.onlyall.net/webasyst/category/cognaq/?promo_id=356754" target="_blank" style="color: red; font-size: 11pt;">Коньяк от ординарного до коллекционного </a>'; i++;
+//	bn[i] = '<a href="http://www.onlyall.net/webasyst/grand-vintazh-2007-cr-sh/?promo_id=356754" target="_blank" style="color: blue; font-size: 11pt;">Шампанское к Новому Году</a>'; i++;
+//	bn[i] = '<a href="http://www.onlyall.net/webasyst/category/shampanskoe/?promo_id=356754" target="_blank" style="color: red; font-size: 11pt;">Шампанское от ординарного до коллекционного</a>'; i++;
+//	bn[i] = '<a href="http://www.onlyall.net/webasyst/category/vino-opredelennogo-goda/?promo_id=356754" target="_blank" style="color: blue; font-size: 11pt;">Вино года рождения именинника</a>'; i++;
+//	bn[i] = '<a href="http://www.onlyall.net/webasyst/category/kalvados/?promo_id=356754" target="_blank" style="color: red; font-size: 11pt;">Кальвадос от 3-х до 7-и лет выдержки </a>'; i++;
+//	bn[i] = '<a href="http://www.onlyall.net/webasyst/category/ledyanoe-vino/?promo_id=356754" target="_blank" style="color: blue; font-size: 11pt;">Ледяные вина - Ice Wine</a>'; i++;
+//	bn[i] = '<a href="http://www.onlyall.net/webasyst/category/vino/?promo_id=356754" target="_blank" style="color: red; font-size: 11pt;">Вино ординарное, марочное и коллекционное</a>'; i++;
+//	bn[i] = '<a href="http://vkadre.com" target="_blank" style="color: red; font-size: 11pt;">Вкадре - Здесь можно наблюдать за интимной жизнью других людей </a>'; i++;
+//	bn[i] = '<a href="http://vkadre.com" target="_blank" style="color: blue; font-size: 11pt;">Бесплатное порно видео с просмотром порно онлайн без регистраций </a>'; i++;
+//	bn[i] = '<a href="http://vkadre.com" target="_blank" style="color: blue; font-size: 11pt;">Нравится смотреть порно видео? Смотри порно онлайн на vkadre.com</a>'; i++;
+//	bn[i] = '<a href="http://gorodsex.ru" target="_blank" style="color: blue; font-size: 11pt;">Новый набор девушек в СЕКС ПО ТЕЛЕФОНУ! Будь у нее первым!</a>'; i++;
+//	bn[i] = '<a href="http://gorodsex.ru" target="_blank" style="color: red; font-size: 11pt;">Антикризисное меню девушек в СЕКС ПО ТЕЛЕФОНУ! Новый набор развратниц.</a>'; i++;
+//	bn[i] = '<a href="http://gorodsex.ru" target="_blank" style="color: blue; font-size: 11pt;">Секс По Телефону! Познакомься на линии, разведи на секс в реале!</a>'; i++;
+//	bn[i] = '<a href="http://gorodsex.ru" target="_blank" style="color: red; font-size: 11pt;">Извращенцам дешевле! Впервые в СЕКСе ПО ТЕЛЕФОНУ разврат по бросовым ценам!</a>'; i++;
+//	bn[i] = '<a href="http://gorodsex.ru" target="_blank" style="color: blue; font-size: 11pt;">Мамочки обожают СЕКС по ТЕЛЕФОНУ! Узнай, сколько осталось свободных!</a>'; i++;
+//	bn[i] = '<a href="http://gorodsex.ru" target="_blank" style="color: red; font-size: 11pt;">Последний Секс По Телефону в России. Звони, пока можно!</a>'; i++;
+//	bn[i] = '<a href="http://gomakemerich2.com/?s=35&ref=wp_w14196p143_plab1&url=%23popup-reg" target="_blank" style="color: blue; font-size: 11pt;">Вулкан Удачи - знаменитые игровые автоматы. Только в июне, внеси депозит от 100р и получи СУПЕРБОНУС!</a>'; i++;
+//	bn[i] = '<a href="http://gomakemerich2.com/?s=35&ref=wp_w14196p143_plab2&url=%23popup-reg" target="_blank" style="color: red; font-size: 11pt;">Игровые автоматы ВУЛКАН. Высокий % отдачи. СУПЕРБОНУС в июне при пополнении депозита от 100р!</a>'; i++;
+//	bn[i] = '<a href="http://reptilicus.net" target="_blank"><b style="color: blue;">Полный контроль над телефоном! Чтение SMS, VIBER, VK, OK. Запись звонков. Не дай ворам шанса!</b></a>'; i++;
+//	bn[i] = '<a href="//pornolab.net/forum/info.php?show=advert" target="_blank" style="color: red; font-size: 11pt;">Рекламное место сдается!</a>'; i++;
+//	bn[i] = '<iframe src="http://intimlife.net/pornlab-iframe-toplink.html" frameborder=0 vspace=0 hspace=0 width="700px" height="20px" marginwidth=0 marginheight=0 scrolling=no></iframe>'; i++;
+//	bn[i] = '<a href="http://intimlife.net/escort/Москва--Россия/independent?utm_source=pornolab_net&utm_medium=banner&utm_campaign=i_ind_msk" target="_blank"><b style="color: red;">Intimlife - проститутки в Москве от 4000 руб в час. Выбрать »</b></a>'; i++;
+//	bn[i] = '<a href="http://intimlife.net/escort/Москва--Россия/trans?utm_source=pornolab.net&utm_campaign=intimlife&utm_content=section5" target="_blank"><b style="color: red;">Intimlife: Хочешь секс с транссексуалкой в Москве? Не отказывай себе. От 3000р</b></a>'; i++;
+//	bn[i] = '<a href="https://juliadates.com/land/adaptive_69?p=29&j1=pornsite&j2=pornolab&j3=1" target="_blank"><b style="color: blue;">JuliaDates - самая большая база содержанок в СНГ</b></a>'; i++;
+//	bn[i] = '<a href="https://juliadates.com/land/adaptive_69?p=29&j1=pornsite&j2=pornolab&j3=2" target="_blank"><b style="color: red;">JuliaDates - найди содержанку в Москве и Питере</b></a>'; i++;
+//	bn[i] = '<a href="https://juliadates.com/land/adaptive_69?p=29&j1=pornsite&j2=pornolab&j3=3" target="_blank"><b style="color: blue;">Доступные девушки для секс встреч JuliaDates</b></a>'; i++;
+//	bn[i] = '<a href="https://juliadates.com/land/adaptive_69?p=29&j1=pornsite&j2=pornolab&j3=4" target="_blank"><b style="color: red;">Элитные эскортницы на JuliaDates</b></a>'; i++;
+//	bn[i] = '<a href="https://juliadates.com/land/adaptive_69?p=29&j1=pornsite&j2=pornolab&j3=5" target="_blank"><b style="color: blue;">JuliaDates - большая база содержанок и эскортниц</b></a>'; i++;
+//	bn[i] = '<a href="https://toy69.ru/dlya-nego/masturbatory/iskusstvennoe-vlagalishche/?utm_source=pornolab&utm_medium=textup&utm_campaign=masturbators&utm_content=text1" target="_blank"><b style="color: red;">Рекомендуемое сообщество - Кисок</b></a>'; i++;
+//	bn[i] = '<a href="https://toy69.ru/dlya-nego/masturbatory/iskusstvennoe-vlagalishche/?utm_source=pornolab&utm_medium=textup&utm_campaign=masturbators&utm_content=text2" target="_blank"><b style="color: darkred;">Рекомендуемое сообщество - Toy69.ru</b></a>'; i++;
+//	bn[i] = '<a href="httpstext3" target="_blank"><b style="color: darkred;">Мы рекомендуем!!!  - Toy69.ru</b></a>'; i++;
+//	bn[i] = '<a href="httpstext4" target="_blank"><b style="color: red;">ПОРНОЛАБ рекомендует !!! - Toy69.ru</b></a>'; i++;
+//	bn[i] = '<a href="https://www.intimshop.ru/catalog/muzhskie_seks_igrushki/?partner=20639&utm_source=plabnet&utm_medium=text&utm_campaign=delivery" target="_blank"><b style="color: MediumVioletRed;">Товары для самых взрослых с анонимной доставкой по всему миру</b></a>'; i++;
+//	bn[i] = '<a href="https://www.intimshop.ru/catalog/muzhskie_seks_igrushki/?partner=20639&utm_source=plabnet&utm_medium=text&utm_campaign=promo" target="_blank"><b style="color: MediumVioletRed;">Мастурбатор в подарок и скидка 5% по промокоду LIKE</b></a>'; i++;
+//	bn[i] = '<a href="https://toy69.ru/dlya-nego/masturbatory/iskusstvennoe-vlagalishche/?sort=p.price?der=ASC?utm_source=pornolab&utm_medium=textup&utm_campaign=masturbators&utm_content=text1" target="_blank"><b style="color: MediumVioletRed;">Тут продаются Японки!</b></a>'; i++;
+	bn[i] = '<a href="https://pornolab.net/forum/info.php?show=advert" target="_blank"><b style="color: red;">Здесь могла бы быть ваша реклама!</b></a>'; i++;
+//	bn[i] = '<a href="https://www.gsdeluxe.com/" target="_blank"><b style="color: MediumVioletRed;">Казино GlobalSlots DELUXE</b></a>'; i++;
+	
+	$('#pl-speedbar-a').html(bn[Math.round(Math.random()*(bn.length-1))]); //.parent().css('text-align', 'center');
+});
+
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+//var rnd = Math.round(Math.random()*1000000000);
+//var ref = document.referrer ? escape(document.referrer) : 'unknown';
+//240x120
+	var bn   = [];
+	var t    = 'target="_blank"';
+	var wh   = 'width="240" height="120" alt="" target="_blank"';
+	var base = '//static.pornolab.net/004/ruscams/';
+
+		bn.push( '<a href="http://ruscams.net.ru" '+t+'><img src="'+base+'11.gif" '+wh+' /></a>' );
+	bn.push( '<a href="http://video-girl.net.ru" '+t+'><img src="'+base+'12.gif" '+wh+' /></a>' );
+
+	//$('#adriver-240x120').html('<iframe src="http://vsexshop.ru/store/pornolab_all_banner" width="240" height="120" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" hspace="0" vspace="0"></iframe>');
+	//$('#adriver-240x120').html('<img src="http://static.pornolab.net/004/bl_240_120.gif" />');
+	//$('#adriver-240x120').html('<iframe src="http://static.pornolab.net/004/traffic.ru/if2.html?new" width="240" height="120" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" hspace="0" vspace="0"></iframe>');
+	//$('#adriver-240x120').html(bn[Math.round(Math.random()*(bn.length-1))]);
+});
+</script>
+
+<!--page_container-->
+<div id="page_container">
+<a name="top"></a>
+
+<!--page_header-->
+<div id="page_header">
+
+<!--main_nav-->
+<div id="main-nav" style="height: 17px;">
+	<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td class="nowrap">
+			<a href="./index.php"><b>Главная</b></a>&#0183;
+			<a href="tracker.php?f[]=-1"><b>Трекер</b></a>&#0183;
+			<a href="search.php"><b>Поиск</b></a>&#0183;
+			<a href="viewtopic.php?t=980423"><b>Правила</b></a>&#0183;
+			<a href="viewforum.php?f=566"><b style="color: #993300;">FAQ</b></a>&#0183;
+			<a href="privmsg.php?folder=inbox"><b>ЛС</b></a>&#0183;
+			<a href="groupcp.php"><b>Группы</b></a>&#0183;
+			<a href="viewtopic.php?t=2947333"><i class="fas fa-heart" style="color: red;"></i>&nbsp;<b style="color: #993300;">Donate</b></a>&#0183;
+									<a href="https://bongacams4.com/track?c=607068" target="_blank"><b style="color: blue;">Секс-чат</b></a>
+								</td>
+	</tr>
+	</table>
+</div>
+<!--/main-nav-->
+
+
+<div style="position: absolute; top: 2px; right: 9px;">
+		&#0183;
+	<form id="quick-search" method="post" action="">
+	<input type="hidden" name="max" value="1" />
+	<input type="hidden" name="to" value="1" />
+	поиск&nbsp;<input id="search-text" type="search" name="nm" accesskey="ы" value="" class="hint" style="width: 150px;" />
+	<select id="search-action" autocomplete="off">
+		<script>
+		$(function () {
+			if ($('#search-mode').length) {
+				$('#search-action').val($('#search-mode').val());
+			}
+            $('#quick-search').on('submit', function(event) {
+                var selectedValue = $('#search-action').val();
+                var searchText = $('#search-text').val();
+                var searchUrl;
+
+                if (selectedValue === 'cse') {
+                    searchUrl = 'https://www.google.com/search?q=site:pornolab.net+' + encodeURIComponent(searchText);
+                } else if (selectedValue === 'ddg') {
+                    searchUrl = 'https://duckduckgo.com/?q=site:pornolab.net+' + encodeURIComponent(searchText);
+                }
+
+                if (searchUrl) {
+                    window.open(searchUrl, '_blank');
+                    event.preventDefault();
+                }
+            });
+		});
+		</script>
+		<option value="tracker.php" selected="selected"> раздачи </option>
+		<option value="search.php"  > все темы </option>
+        		<option value="search.php?po=1&dm=1"  > в сообщениях </option>
+        				<option value="cse"> в Google </option>
+        <option value="ddg">&nbsp;в DuckDuckGo&nbsp;</option>
+	</select>
+	<input type="submit" class="med bold" value="&raquo;" style="width: 30px;" />
+	</form>
+<a style="display: none;" id="cse-search-btn-top" href="search-text">&nbsp;</a>
+</div>
+
+<!--logo-->
+<div id="logo">
+	<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td id="logo-td">
+									<a href="./index.php">
+								<img src="//static.pornolab.net/images/logo/spring/logo_spring-2.gif" class="site-logo" alt="" />
+							</a>
+			<!-- <a href="./index.php"><img src="//static.pornolab.net/images/logo/logo.gif" width="353" height="131" alt="" /></a> -->
+		</td>
+		<td width="100%" class="tCenter" style="padding: 0 6px 0 6px;">
+
+			
+			
+			<table cellpadding="0" cellspacing="0" class="bCenter" style="padding: 4px 6px 0 6px;">
+
+						<tr>
+				<td>
+					<div id="bn-hirovpn-1" data-max_width="728" class="tCenter bCenter" style="padding: 0;"></div>
+<script type="text/javascript">
+$(document).ready(function(){
+	var i    = 0;
+	var t    = 'target="_blank"';
+	var wh   = 'width="728" height="100" alt="Hiro VPN"';
+	var bn   = [];
+	var base = '//static.pornolab.net/004/hiro_vpn/20260505/';
+
+	var url  = [];
+	bn[i] = '<a href="https://t.me/HiroVpnBot?start=secret" '+t+'><img src="'+base+'01.png" '+wh+' /></a>'; i++;
+	bn[i] = '<a href="https://t.me/HiroVpnBot?start=secret" '+t+'><img src="'+base+'02.png" '+wh+' /></a>'; i++;
+	bn[i] = '<a href="https://t.me/HiroVpnBot?start=secret" '+t+'><img src="'+base+'03.png" '+wh+' /></a>'; i++;
+	bn[i] = '<a href="https://t.me/HiroVpnBot?start=secret" '+t+'><img src="'+base+'04.png" '+wh+' /></a>'; i++;
+	
+	$('#bn-hirovpn-1').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+	var $block = $('#bn-hirovpn-1');
+	var logoWidth = Math.max($('#logo-td').width(), 250);
+	var frameWidth = Math.min($(window).width() - logoWidth - 50, $block.data('max_width'));
+	$block.find('img').css({
+		'max-width': frameWidth + 'px',
+	});
+	$block.css({
+		'min-width': frameWidth + 'px',
+		display: 'inline-block',
+	});
+});
+</script>				</td>
+			</tr>
+						</table>
+
+				</td>
+	</tr>
+	</table>
+</div>
+<!--/logo-->
+
+<!--topmenu-->
+<div class="topmenu">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+		<td width="50%">
+		Вы зашли как: &nbsp;<a href="./profile.php?mode=viewprofile&amp;u=23760120"><b class="med">venjer41</b></a>&nbsp; [ <a href="#" onclick="return post2url('login.php', {logout: 1});">Выход</a> ]
+	</td>
+	
+		<td>
+				<i class="fas fa-envelope" style="color: #345da4;"></i>
+				<a href="privmsg.php?folder=inbox">
+		Личные сообщения: новых нет</a>
+	</td>
+	
+		<td width="50%" class="tRight">
+		<a href="javascript:void(0)" onclick="ajax.dark_theme(1)">
+
+			<i class="fas fa-moon"></i>
+		</a>
+		&#0183;
+		<a href="profile.php?mode=editprofile">Настройки</a>
+		&#0183;
+		<a href="./profile.php?mode=viewprofile&amp;u=23760120">Рейтинг/Закачки</a> <a href="#dls-menu" class="menu-root without-caret menu-alt1"><i class="fas fa-caret-down btn-caret"></i></a>
+		&#0183;
+		<a href="search.php?uid=23760120">Мои сообщения</a>
+	</td>
+	</tr>
+</table>
+</div><!--/topmenu-->
+    
+<noscript>
+	<style type="text/css">
+	.sp-body, .sp-title { display: block; }
+	</style>
+</noscript>
+
+<div class="menu-sub" id="dls-menu">
+	<div class="menu-a bold nowrap">
+		<a class="med" href="tracker.php?rid=23760120">Текущие раздачи</a>
+		<a class="med" href="./profile.php?mode=viewprofile&amp;u=23760120">Текущие закачки</a>
+		<a class="med" href="search.php?dlu=23760120&amp;dlc=1">Прошлые закачки</a>
+		<a class="med" href="search.php?dlu=23760120&amp;dlw=1">Будущие закачки</a>
+	</div>
+</div>
+
+<!--breadcrumb-->
+<!--<div id="breadcrumb"></div>-->
+<!--/breadcrumb-->
+
+
+</div>
+<!--/page_header-->
+
+<script>
+    $(function () {
+        const alertKey = 'bypass-top-alert-hide-2024';
+        $('div.top-alert span').on('click', function () {
+            store.set(alertKey, 1); $('div.top-alert').hide();
+        });
+        if (!store.get(alertKey)) {
+            $('div.top-alert').show();
+        }
+    });
+</script>
+<style>
+    .ta-inf2 {
+        background: #f5f1e8;
+        border-color: #b19b68;
+    }
+    .top-alert {
+        position: relative;
+        max-width: 80%;
+        padding: 13px 25px 12px;
+        line-height: 27px;
+        border: 1px solid #800000;
+        border-radius: 6px;
+        box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
+        font-size: 14px;
+        text-align: center;
+        margin: 16px auto 2px;
+        display: none;
+    }
+    .ta-hide-btn {
+        position: absolute;
+        top: -2px;
+        right: 6px;
+        font-size: 18px;
+        color: #000000;
+    }
+    .top-alert a {
+        color: #690a1d;
+        text-decoration: none;
+    }
+    .top-alert a:hover {
+        color: #690a1d;
+    }
+</style>
+<div class="top-alert ta-inf2 hide-for-print">
+    <span><a target="_blank" href="/forum/viewtopic.php?t=2947333">Нам нужна помощь на оплату серверов! We're need <i class="fas fa-heart" style="color: red;"></i> donate to pay the servers!</a></span>
+    <span class="ta-hide-btn bold nowrap clickable">&#x2715;</span>
+</div>
+
+<!--page_content-->
+<div id="page_content">
+<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;"><tr>
+
+
+<!--main_content-->
+<td id="main_content">
+<div id="main_content_wrap">
+
+
+<!--========================================================================-->
+<!--************************************************************************-->
+
+
+
+<!-- page_header.tpl END -->
+<!-- module_xx.tpl START -->
+
+<table cellpadding="2" cellspacing="0" width="100%">
+	<tr>
+		<td valign="bottom" width="100%">
+			<h1 class="maintitle">Трекер</h1>
+			<p class="small" style="margin: 12px 4px 8px;"><b>Страницы: &nbsp;1</b></p>
+			<p class="med bold" style="margin: 12px 4px 10px;">Результатов поиска: 0 (max: 700)</p>
+
+			<table cellpadding="2" cellspacing="0" width="100%">
+				<tr>
+					<td class="nav" width="100%"><a href="./index.php">Список форумов pornolab.net</a></td>
+				</tr>
+			</table>
+
+		</td>
+		<td>
+			<div id="adriver-240x120">
+								
+<a style='font-size: 13px;' data-sL6V9hrqKn='nKqrh9V6L'>Роrnolab peкoмендyeт </a>
+<span style='font-size: 13px;' data-sL6V9hrqKn='nKqrh9V6L'>Вставь Япоше</span>
+
+<style>
+#sL6V9hrqKn {
+height: 120px;
+margin-right: -2px;
+padding-bottom: 2px;
+width: 240px;
+max-width: 240px;
+
+font-size: 24px;
+font-style: italic;
+display: inline-block;
+float: right;
+}
+
+#sL6V9hrqKn a {
+	min-width: 141px;
+  max-width: 240px;
+
+  font-weight:bold;font-style: italic;
+}
+
+#sL6V9hrqKn + a:link {
+	min-width: 141px;
+	max-width: 238px;
+
+  max-width: 240px;
+
+  font-weight:bold;font-style: italic;
+}
+
+#sL6V9hrqKn + a:focus, #nKqrh9V6L  + a:visited {
+}
+
+header>a {
+  color: #f139c3;
+  cursor: pointer;
+}
+
+header>span {
+  color: #f139c3;
+  cursor: pointer;
+}
+
+.vs_link_class {
+  color: #f139c3 !important;
+  pointer-events: none;
+}
+</style>
+
+<script>
+
+var sOuter=function(){
+	h="http://vsexshop.ru/store/index/item_set/122?p_id=66003";
+  window.location.assign(h);
+}
+
+$("a[data-sL6V9hrqKn='nKqrh9V6L']").bind( "click", function() {
+	sOuter();
+});
+
+var vs_first_page = false;
+if ($('#latest_news').length){
+  vs_first_page = true;
+};
+if(vs_first_page){
+  $( "footer" ).insertBefore( $("#latest_news").first() );
+  $( "footer" ).css("position","absolute");
+  $( "footer" ).css("padding-left","600px");
+} else {
+  if($('.maintitle').length){
+    $( "footer" ).insertBefore( ".maintitle" );
+  };
+}
+
+$($( "#sL6V9hrqKn>a" )[0]).addClass( "vs_link_class" );
+$($( "#sL6V9hrqKn>a" )[1]).addClass( "vs_link_class" );
+</script>			</div>		</td>
+	</tr>
+</table>
+
+
+<div id="search_opt" style="display: none;">
+	<form id="tr-form" method="post" action="tracker.php" autocomplete="off">
+		
+<input type="hidden" name="prev_my" value="0" />
+<input type="hidden" name="prev_new" value="0" />
+<input type="hidden" name="prev_oop" value="0" />
+
+		<table class="bordered w100" cellspacing="0">
+			<col class="row1">
+			<tr>
+				<th class="thHead">Поиск по раздачам</th>
+			</tr>
+			<tr>
+				<td class="row4" style="padding: 4px;">
+
+					<table class="fieldsets borderless bCenter pad_0" cellspacing="0">
+						<tr>
+							<td rowspan="2" width="50%" class="">
+
+								<fieldset id="fs">
+									<legend>Искать в форумах</legend>
+									<div>
+										<p class="select">
+											<select id="fs-main" style="width: 100%; height: 390px;" name="f[]" multiple="multiple" size="20">
+												<option id="fs--1" value="-1">&nbsp;Все имеющиеся</option><optgroup label="&nbsp;Правила и FAQ-и / Tracker Rules &amp; FAQ&#039;s">
+<option id="fs-1817" value="1817" class="root_forum">Обход блокировки&nbsp;</option>
+</optgroup>
+<optgroup label="&nbsp;Тематические релизы раздач / Topic Releases">
+<option id="fs-1670" value="1670" class="root_forum has_sf">Эротическое видео / Erotic &amp; Softcore&nbsp;</option>
+<option id="fs-1768" value="1768"> |- Эротические фильмы / Erotic Movies&nbsp;</option>
+<option id="fs-60" value="60"> |- Документальные фильмы / Documentary &amp; Reality&nbsp;</option>
+<option id="fs-1671" value="1671"> |- Эротические ролики и сайтрипы / Erotic Clips &amp; SiteRips&nbsp;</option>
+<option id="fs-1644" value="1644"> |- Нудизм-Натуризм / Nudity&nbsp;</option>
+<option id="fs-1672" value="1672" class="root_forum has_sf">Зарубежные порнофильмы / Full Length Movies&nbsp;</option>
+<option id="fs-1111" value="1111"> |- Паки полных фильмов / Full Length Movies Packs&nbsp;</option>
+<option id="fs-508" value="508"> |- Классические фильмы / Classic&nbsp;</option>
+<option id="fs-555" value="555"> |- Фильмы с сюжетом / Feature &amp; Vignettes&nbsp;</option>
+<option id="fs-1845" value="1845"> |- Гонзо-фильмы 1991-2010 / Gonzo 1991-2010&nbsp;</option>
+<option id="fs-1673" value="1673"> |- Гонзо-фильмы 2011-2026 / Gonzo 2011-2026&nbsp;</option>
+<option id="fs-1112" value="1112"> |- Фильмы без сюжета 1991-2010 / All Sex &amp; Amateur 1991-2010&nbsp;</option>
+<option id="fs-1718" value="1718"> |- Фильмы без сюжета 2011-2026 / All Sex &amp; Amateur 2011-2026&nbsp;</option>
+<option id="fs-553" value="553"> |- Лесбо-фильмы / All Girl &amp; Solo&nbsp;</option>
+<option id="fs-1143" value="1143"> |- Этнические фильмы / Ethnic-Themed&nbsp;</option>
+<option id="fs-1646" value="1646"> |- Видео для телефонов и КПК / Pocket РС &amp; Phone Video&nbsp;</option>
+<option id="fs-1717" value="1717" class="root_forum has_sf">Зарубежные фильмы в высоком качестве (DVD&amp;HD) / Full Length Movies High-Quality&nbsp;</option>
+<option id="fs-1851" value="1851"> |- Эротические и Документальные видео (DVD) / Erotic, Documentary &amp; Reality (DVD)&nbsp;</option>
+<option id="fs-1713" value="1713"> |- Фильмы с сюжетом, Классические (DVD) / Feature &amp; Vignettes, Classic (DVD)&nbsp;</option>
+<option id="fs-512" value="512"> |- Гонзо, Лесбо и Фильмы без сюжета (DVD) / Gonzo, All Girl &amp; Solo, All Sex (DVD)&nbsp;</option>
+<option id="fs-1712" value="1712"> |- Эротические и Документальные видео (HD Video) / Erotic, Documentary &amp; Reality (HD Video)&nbsp;</option>
+<option id="fs-1775" value="1775"> |- Фильмы с сюжетом, Классические (HD Video) / Feature &amp; Vignettes, Classic (HD Video)&nbsp;</option>
+<option id="fs-1450" value="1450"> |- Гонзо, Лесбо и Фильмы без сюжета (HD Video) / Gonzo, All Girl &amp; Solo, All Sex (HD Video)&nbsp;</option>
+<option id="fs-1674" value="1674" class="root_forum has_sf">Русское порно / Russian Video&nbsp;</option>
+<option id="fs-902" value="902"> |- Русские порнофильмы / Russian Full Length Movies&nbsp;</option>
+<option id="fs-1675" value="1675"> |- Паки русских порнороликов / Russian Clips Packs&nbsp;</option>
+<option id="fs-36" value="36"> |- Сайтрипы с русскими актрисами 1991-2015 / Russian SiteRip&#039;s 1991-2015&nbsp;</option>
+<option id="fs-1830" value="1830"> |- Сайтрипы с русскими актрисами 1991-2015 (HD Video) / Russian SiteRip&#039;s 1991-2015 (HD Video)&nbsp;</option>
+<option id="fs-1803" value="1803"> |- Сайтрипы с русскими актрисами 2016-2025 / Russian SiteRip&#039;s 2016-2025&nbsp;</option>
+<option id="fs-1831" value="1831"> |- Сайтрипы с русскими актрисами 2016-2025 (HD Video) / Russian SiteRip&#039;s 2016-2025 (HD Video)&nbsp;</option>
+<option id="fs-1877" value="1877"> |- Сайтрипы с русскими актрисами 2026 / Russian SiteRip&#039;s 2026&nbsp;</option>
+<option id="fs-1878" value="1878"> |- Сайтрипы с русскими актрисами 2026 (HD Video) / Russian SiteRip&#039;s 2026 (HD Video)&nbsp;</option>
+<option id="fs-1741" value="1741"> |- Русские Порноролики Разное / Russian Clips (various)&nbsp;</option>
+<option id="fs-1676" value="1676"> |- Русское любительское видео / Russian Amateur Video&nbsp;</option>
+<option id="fs-1677" value="1677" class="root_forum has_sf">Зарубежные порноролики / Clips&nbsp;</option>
+<option id="fs-1780" value="1780"> |- Паки сайтрипов (HD Video) / SiteRip&#039;s Packs (HD Video)&nbsp;</option>
+<option id="fs-1110" value="1110"> |- Паки сайтрипов  (SD Video) / SiteRip&#039;s Packs (SD Video)&nbsp;</option>
+<option id="fs-1678" value="1678"> |- Паки порнороликов по актрисам / Actresses Clips Packs&nbsp;</option>
+<option id="fs-1124" value="1124"> |- Сайтрипы 1991-2010 (HD Video) / SiteRip&#039;s 1991-2010 (HD Video)&nbsp;</option>
+<option id="fs-1784" value="1784"> |- Сайтрипы 2011-2012 (HD Video) / SiteRip&#039;s 2011-2012 (HD Video)&nbsp;</option>
+<option id="fs-1769" value="1769"> |- Сайтрипы 2013 (HD Video) / SiteRip&#039;s 2013 (HD Video)&nbsp;</option>
+<option id="fs-1793" value="1793"> |- Сайтрипы 2014 (HD Video) / SiteRip&#039;s 2014 (HD Video)&nbsp;</option>
+<option id="fs-1797" value="1797"> |- Сайтрипы 2015 (HD Video) / SiteRip&#039;s 2015 (HD Video)&nbsp;</option>
+<option id="fs-1804" value="1804"> |- Сайтрипы 2016 (HD Video) / SiteRip&#039;s 2016 (HD Video)&nbsp;</option>
+<option id="fs-1819" value="1819"> |- Сайтрипы 2017 (HD Video) / SiteRip&#039;s 2017 (HD Video)&nbsp;</option>
+<option id="fs-1825" value="1825"> |- Сайтрипы 2018 (HD Video) / SiteRip&#039;s 2018 (HD Video)&nbsp;</option>
+<option id="fs-1836" value="1836"> |- Сайтрипы 2019 (HD Video) / SiteRip&#039;s 2019 (HD Video)&nbsp;</option>
+<option id="fs-1842" value="1842"> |- Сайтрипы 2020 (HD Video) / SiteRip&#039;s 2020 (HD Video)&nbsp;</option>
+<option id="fs-1846" value="1846"> |- Сайтрипы 2021 (HD Video) / SiteRip&#039;s 2021 (HD Video)&nbsp;</option>
+<option id="fs-1857" value="1857"> |- Сайтрипы 2022 (HD Video) / SiteRip&#039;s 2022 (HD Video)&nbsp;</option>
+<option id="fs-1861" value="1861"> |- Сайтрипы 2023 (HD Video) / SiteRip&#039;s 2023 (HD Video)&nbsp;</option>
+<option id="fs-1867" value="1867"> |- Сайтрипы 2024 (HD Video) / SiteRip&#039;s 2024 (HD Video)&nbsp;</option>
+<option id="fs-1872" value="1872"> |- Сайтрипы 2025 (HD Video) / SiteRip&#039;s 2025 (HD Video)&nbsp;</option>
+<option id="fs-1875" value="1875"> |- Сайтрипы 2026 (HD Video) / SiteRip&#039;s 2026 (HD Video)&nbsp;</option>
+<option id="fs-1451" value="1451"> |- Сайтрипы 1991-2010 / SiteRip&#039;s 1991-2010&nbsp;</option>
+<option id="fs-1788" value="1788"> |- Сайтрипы 2011-2012 / SiteRip&#039;s 2011-2012&nbsp;</option>
+<option id="fs-1789" value="1789"> |- Сайтрипы 2013 / SiteRip&#039;s 2013&nbsp;</option>
+<option id="fs-1792" value="1792"> |- Сайтрипы 2014 / SiteRip&#039;s 2014&nbsp;</option>
+<option id="fs-1798" value="1798"> |- Сайтрипы 2015 / SiteRip&#039;s 2015&nbsp;</option>
+<option id="fs-1805" value="1805"> |- Сайтрипы 2016 / SiteRip&#039;s 2016&nbsp;</option>
+<option id="fs-1820" value="1820"> |- Сайтрипы 2017 / SiteRip&#039;s 2017&nbsp;</option>
+<option id="fs-1826" value="1826"> |- Сайтрипы 2018 / SiteRip&#039;s 2018&nbsp;</option>
+<option id="fs-1837" value="1837"> |- Сайтрипы 2019 / SiteRip&#039;s 2019&nbsp;</option>
+<option id="fs-1843" value="1843"> |- Сайтрипы 2020 / SiteRip&#039;s 2020&nbsp;</option>
+<option id="fs-1847" value="1847"> |- Сайтрипы 2021 / SiteRip&#039;s 2021&nbsp;</option>
+<option id="fs-1856" value="1856"> |- Сайтрипы 2022 / SiteRip&#039;s 2022&nbsp;</option>
+<option id="fs-1862" value="1862"> |- Сайтрипы 2023 / SiteRip&#039;s 2023&nbsp;</option>
+<option id="fs-1868" value="1868"> |- Сайтрипы 2024 / SiteRip&#039;s 2024&nbsp;</option>
+<option id="fs-1873" value="1873"> |- Сайтрипы 2025 / SiteRip&#039;s 2025&nbsp;</option>
+<option id="fs-1876" value="1876"> |- Сайтрипы 2026 / SiteRip&#039;s 2026&nbsp;</option>
+<option id="fs-1707" value="1707"> |- Сцены из фильмов / Movie Scenes (кроме SiteRip)&nbsp;</option>
+<option id="fs-1874" value="1874"> |- Порноролики с переводом / Clips with translation&nbsp;</option>
+<option id="fs-284" value="284"> |- Порноролики Разное / Clips (various)&nbsp;</option>
+<option id="fs-1853" value="1853"> |- Компиляции и Музыкальные порно клипы / Compilations &amp; Porn Music Video (PMV)&nbsp;</option>
+<option id="fs-1823" value="1823"> |- Порноролики в 3D и Virtual Reality (VR) / 3D &amp; Virtual Reality Videos&nbsp;</option>
+<option id="fs-1800" value="1800" class="root_forum has_sf">Японское и китайское порно / Japanese &amp; Chinese Adult Video (JAV)&nbsp;</option>
+<option id="fs-1801" value="1801"> |- Паки японских фильмов и сайтрипов / Full Length Japanese Movies Packs &amp; SiteRip&#039;s Packs&nbsp;</option>
+<option id="fs-1719" value="1719"> |- Японские фильмы и сайтрипы (DVD и HD Video) / Japanese Movies &amp; SiteRip&#039;s (DVD &amp; HD Video)&nbsp;</option>
+<option id="fs-997" value="997"> |- Японские фильмы и сайтрипы 1991-2014 / Japanese Movies &amp; SiteRip&#039;s 1991-2014&nbsp;</option>
+<option id="fs-1818" value="1818"> |- Японские фильмы и сайтрипы 2015-2026 / Japanese Movies &amp; SiteRip&#039;s 2015-2026&nbsp;</option>
+<option id="fs-1849" value="1849"> |- Китайские фильмы и сайтрипы (DVD и HD Video) / Chinese Movies &amp; SiteRip&#039;s (DVD &amp; HD Video)&nbsp;</option>
+<option id="fs-1815" value="1815"> |- Архив (Японское и китайское порно)&nbsp;</option>
+<option id="fs-1723" value="1723" class="root_forum has_sf">Фото и журналы / Photos &amp; Magazines&nbsp;</option>
+<option id="fs-1726" value="1726"> |- MetArt &amp; MetModels&nbsp;</option>
+<option id="fs-883" value="883"> |- Эротические студии Разное / Erotic Picture Gallery (various)&nbsp;</option>
+<option id="fs-1728" value="1728"> |- Любительское фото / Amateur Picture Gallery&nbsp;</option>
+<option id="fs-1729" value="1729"> |- Подборки по актрисам / Actresses Picture Packs&nbsp;</option>
+<option id="fs-38" value="38"> |- Подборки сайтрипов / SiteRip&#039;s Picture Packs&nbsp;</option>
+<option id="fs-1757" value="1757"> |- Подборки сетов / Picture Sets Packs&nbsp;</option>
+<option id="fs-1735" value="1735"> |- Тематическое и нетрадиционное фото / Misc &amp; Special Interest Picture Packs&nbsp;</option>
+<option id="fs-1731" value="1731"> |- Журналы / Magazines&nbsp;</option>
+<option id="fs-1802" value="1802"> |- Архив (Фото)&nbsp;</option>
+<option id="fs-1745" value="1745" class="root_forum has_sf">Хентай и Манга, Мультфильмы и Комиксы, Рисунки, Аудио / Hentai &amp; Manga, Cartoons &amp; Comics, Artwork &amp; Audio&nbsp;</option>
+<option id="fs-1679" value="1679"> |- Хентай: основной подраздел / Hentai: main subsection&nbsp;</option>
+<option id="fs-1740" value="1740"> |- Хентай в высоком качестве (DVD и HD) / Hentai DVD &amp; HD&nbsp;</option>
+<option id="fs-1834" value="1834"> |- Хентай: ролики 2D / Hentai: 2D video&nbsp;</option>
+<option id="fs-1752" value="1752"> |- Хентай: ролики 3D / Hentai: 3D video&nbsp;</option>
+<option id="fs-1760" value="1760"> |- Хентай: Манга / Hentai: Manga&nbsp;</option>
+<option id="fs-1781" value="1781"> |- Хентай: Арт и HCG / Hentai: Artwork &amp; HCG&nbsp;</option>
+<option id="fs-1711" value="1711"> |- Мультфильмы / Cartoons&nbsp;</option>
+<option id="fs-1296" value="1296"> |- Комиксы, рисунки, аудио / Comics, Artwork &amp; Audio&nbsp;</option>
+<option id="fs-1863" value="1863"> |- Обсуждение / Discussion&nbsp;</option>
+<option id="fs-1864" value="1864"> |- Архив (Хентай и Манга, Мультфильмы и Комиксы, Рисунки, Аудио)&nbsp;</option>
+<option id="fs-1838" value="1838" class="root_forum has_sf">Игры / Games&nbsp;</option>
+<option id="fs-1750" value="1750"> |- Игры: основной подраздел / Games: main subsection&nbsp;</option>
+<option id="fs-1756" value="1756"> |- Игры: визуальные новеллы (профессиональная студия) / Games: Visual Novels (Pro)&nbsp;</option>
+<option id="fs-1869" value="1869"> |- Игры: визуальные новеллы (независимый разработчик) / Games: Visual Novels (Indie)&nbsp;</option>
+<option id="fs-1785" value="1785"> |- Игры: ролевые / Games: role-playing [RPG Maker / WOLF RPG Editor]&nbsp;</option>
+<option id="fs-1790" value="1790"> |- Игры и Софт: FMV-игра, Анимация / Games and Software: FMV-game, Animation&nbsp;</option>
+<option id="fs-1827" value="1827"> |- Игры: В разработке и Демо (основной подраздел) / Games: In Progress and Demo (main subsection)&nbsp;</option>
+<option id="fs-1870" value="1870"> |- Игры: В разработке и Демо (визуальные новеллы - независимый разработчик) / Games: In Progress and Demo (visual novel..&nbsp;</option>
+<option id="fs-1828" value="1828"> |- Игры: В разработке и Демо (ролевые) / Games: In Progress and Demo (role-playing) [RPG Maker / WOLF RPG Editor]&nbsp;</option>
+<option id="fs-1829" value="1829"> |- Обсуждение игр / Games Discussion&nbsp;</option>
+<option id="fs-1865" value="1865"> |- Архив (Игры)&nbsp;</option>
+<option id="fs-11" value="11" class="root_forum has_sf">Нетрадиционное порно / Special Interest Movies &amp; Clips&nbsp;</option>
+<option id="fs-1715" value="1715"> |- Транссексуалы (DVD и HD) / Transsexual (DVD &amp; HD)&nbsp;</option>
+<option id="fs-1680" value="1680"> |- Транссексуалы / Transsexual&nbsp;</option>
+<option id="fs-1758" value="1758"> |- Бисексуалы / Bisexual&nbsp;</option>
+<option id="fs-1682" value="1682"> |- БДСМ / BDSM&nbsp;</option>
+<option id="fs-1733" value="1733"> |- Женское доминирование и страпон / Femdom &amp; Strapon&nbsp;</option>
+<option id="fs-1754" value="1754"> |- Подглядывание / Voyeur&nbsp;</option>
+<option id="fs-1734" value="1734"> |- Фистинг и дилдо / Fisting &amp; Dildo&nbsp;</option>
+<option id="fs-1791" value="1791"> |- Беременные / Pregnant&nbsp;</option>
+<option id="fs-509" value="509"> |- Буккаке / Bukkake&nbsp;</option>
+<option id="fs-1859" value="1859"> |- Гэнг-бэнг / GangBang&nbsp;</option>
+<option id="fs-1685" value="1685"> |- Мочеиспускание / Peeing&nbsp;</option>
+<option id="fs-1762" value="1762"> |- Фетиш / Fetish&nbsp;</option>
+<option id="fs-1681" value="1681"> |- Дефекация / Scat&nbsp;</option>
+<option id="fs-1683" value="1683" class="root_forum">Архив (общий)&nbsp;</option>
+<option id="fs-1688" value="1688" class="root_forum has_sf">Гей-порно / Gay Forum&nbsp;</option>
+<option id="fs-903" value="903"> |- Полнометражные гей-фильмы / Full Length Movies (Gay)&nbsp;</option>
+<option id="fs-1765" value="1765"> |- Полнометражные азиатские гей-фильмы / Full-length Asian Films (Gay)&nbsp;</option>
+<option id="fs-1767" value="1767"> |- Классические гей-фильмы (до 1990 года) / Classic Gay Films (Pre-1990&#039;s)&nbsp;</option>
+<option id="fs-1755" value="1755"> |- Гей-фильмы в высоком качестве (DVD и HD) / High-Quality Full Length Movies (Gay DVD &amp; HD)&nbsp;</option>
+<option id="fs-1787" value="1787"> |- Азиатские гей-фильмы в высоком качестве (DVD и HD) / High-Quality Full Length Asian Movies (Gay DVD &amp; HD)&nbsp;</option>
+<option id="fs-1763" value="1763"> |- ПАКи гей-роликов и сайтрипов / Clip&#039;s &amp; SiteRip&#039;s Packs (Gay)&nbsp;</option>
+<option id="fs-1777" value="1777"> |- Гей-ролики в высоком качестве (HD Video) / Gay Clips (HD Video)&nbsp;</option>
+<option id="fs-1691" value="1691"> |- Ролики, SiteRip&#039;ы и сцены из гей-фильмов / Clips &amp; Movie Scenes (Gay)&nbsp;</option>
+<option id="fs-1692" value="1692"> |- Гей-журналы, фото, разное / Magazines, Photo, Rest (Gay)&nbsp;</option>
+<option id="fs-1720" value="1720"> |- Архив (Гей-порно)&nbsp;</option>
+</optgroup>
+											</select>
+										</p>
+																				<p id="fs-qs-div" class="med" style="display: none;">
+                                            <input id="fs-qs-input" type="text" style="width: 200px;" placeholder="фильтр по названию раздела">
+                                                                                        <input type="button" id="select-current-forums" class="clickable" value="выбрать форум текущего поиска" style="margin-left: 10px; margin-top: 5px; margin-bottom: 5px;">
+                                                                                    </p>
+																														<p><img width="300" class="spacer" src="//static.pornolab.net/templates/default/images/spacer.gif" alt="" /></p>
+									</div>
+								</fieldset>
+
+							</td>
+							<td height="1" width="20%">
+
+								<fieldset>
+									<legend>Критерии сортировки</legend>
+									<div class="med">
+										<p class="select">
+<select  name="o" id="o">
+		<option value="1">&nbsp;Зарегистрирован&nbsp;</option>
+		<option value="3">&nbsp;Лучшее совпадение&nbsp;</option>
+		<option value="2">&nbsp;Название темы&nbsp;</option>
+		<option value="4">&nbsp;Количество скачиваний&nbsp;</option>
+		<option selected="selected"  value="10">&nbsp;Количество сидов&nbsp;</option>
+		<option value="11">&nbsp;Количество личей&nbsp;</option>
+		<option value="7">&nbsp;Размер&nbsp;</option>
+		<option value="8">&nbsp;Последнее сообщение&nbsp;</option>
+		<option value="9">&nbsp;Время создания темы&nbsp;</option>
+		<option value="15">&nbsp;Количество комментариев&nbsp;</option>
+</select>
+</p>
+										<p class="radio"><label><input type="radio" name="s" value="1"  /> по возрастанию</label></p>
+										<p class="radio"><label><input type="radio" name="s" value="2"  checked="checked"  /> по убыванию</label></p>
+									</div>
+								</fieldset>
+								<fieldset>
+									<legend>Торренты за</legend>
+									<div>
+										<p class="select">
+<select  name="tm" id="tm">
+		<option selected="selected"  value="-1">&nbsp;всё время&nbsp;</option>
+		<option value="1">&nbsp;сегодня&nbsp;</option>
+		<option value="3">&nbsp;последние 3 дня&nbsp;</option>
+		<option value="7">&nbsp;посл. неделю&nbsp;</option>
+		<option value="14">&nbsp;посл. 2 недели&nbsp;</option>
+		<option value="32">&nbsp;последний месяц&nbsp;</option>
+</select>
+</p>
+									</div>
+								</fieldset>
+
+							</td>
+							<td width="30%">
+
+								<fieldset>
+									<legend>Показывать только</legend>
+									<div class="gen">
+										<p class="chbox dis-if-ts"><label><input type="checkbox"  name="my"  value="1"  />&nbsp;Мои раздачи&nbsp;</label>[<b>&reg;</b>]</p>
+										<p><input type="checkbox" name="dlw" value="0" disabled="disabled" />&nbsp;<a href="search.php?dlu=23760120&amp;dlw=1" class="gen">Будущие закачки&nbsp;</a></p>
+										<p><input type="checkbox" name="dlc" value="0" disabled="disabled" />&nbsp;<a href="search.php?dlu=23760120&amp;dlc=1" class="gen">Прошлые закачки&nbsp;</a></p>
+										<p class="chbox"><label><input type="checkbox"  name="oop"  value="1"  />&nbsp;Только открытые раздачи&nbsp;</label> [<span class="tor-icon tor-approved">&radic;</span>]</p>
+										<p class="chbox dis-if-ts"><label><input type="checkbox"  name="new"  value="1"  />&nbsp;Новые с посл. посещения&nbsp;</label>[<img src="//static.pornolab.net/templates/default/images/icon_minipost_new.gif" class="icon1" alt="" />]&nbsp;</p>
+																				<p class="chbox"><label><input type="checkbox"  name="fn"  value="1"  />&nbsp;Все разделы кроме выбранных&nbsp;</label></p>
+									</div>
+								</fieldset>
+
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" width="50%">
+								<div style="min-width: 510px;">
+									<div style="width: 100%;">
+										<fieldset style="margin-top: 0; padding-bottom: 3px; display: inline-block; width: 50%;">
+											<legend>Автор</legend>
+											<div>
+												<p class="input"><input style="width: 96%;" class="post" type="text" size="16" maxlength="25" name="pn" value="" autocomplete="on"/></p>
+											</div>
+										</fieldset>
+
+																			</div>
+
+									<fieldset style="margin-top: 8px; padding-bottom: 3px;">
+										<legend>Название содержит</legend>
+										<div>
+											<p class="input">
+												<input id="title-search" style="width: 95%;" class="post" type="search" size="50" maxlength="300" name="nm" value="????? 05" autocomplete="on" />
+												<a class="med" href="./viewtopic.php?t=101236#3" style="font-size: 0.9rem;" title="Узнать о таких полезных функциях, как: звёздочка (lesb*), кавычки для поиска фраз (&quot;Janey Doe&quot;), поиск с отрицанием (-trans -gay) и оператор точного поиска определённых слов = (=3d =ir =vr)"><i class="fas fa-question-circle"></i></a>
+											</p>
+											<p class="chbox med" style="padding-top: 3px;">
+												<div class="under-title-search-text">
+												Для точного поиска по слову или фразе используйте оператор <b>=</b>, а для исключения <b>-</b>
+													<br />
+													Пример для слова: <b>=blacked.com</b> &nbsp;&middot;&nbsp; пример для фразы: <b>="Nina Rotti"</b>
+													<br />
+													Исключить слово: <b style="margin-left: 5px;">-legalporno</b> <span style="margin-left: 13px;">&nbsp;&middot;&nbsp;</span> исключить фразу: <b style="margin-left: 7px;">-"fake tits"</b>
+													<br />
+												</div>
+												<a class="med" id="cse-search-btn" href="title-search">Поиск в Google</a> &nbsp;&middot;&nbsp;
+                                                <a class="med" id="ddg-search-btn" href="title-search">Поиск в DuckDuckGo</a> &nbsp;&middot;&nbsp;
+												<a class="med s-all" href="search.php">Поиск по форуму</a>
+											</p>
+										</div>
+									</fieldset>
+									<fieldset style="margin-top: 14px; padding-bottom: 4px;">
+										<legend>Ссылки</legend>
+										<div>
+											<p class="chbox med" style="padding-top: 3px;">
+												<a class="med" href="#" onclick="return get_fs_link();">На выбранные разделы</a><span class="middot">&middot;</span><a class="med" href="#" onclick="return get_full_link();">На этот поиск</a><span class="middot">&middot;</span><a class="med" href="#" onclick="return copy_topics_to_clipboard();">В буфер обмена</a><span class="middot">&middot;</span><a class="med" href="#" onclick="return get_rss();" title="вы можете создать RSS-ленту: после выбора нужного раздела, тэгов или автора нажмите для получения ссылки"><i class="fas fa-rss-square" style="margin-left: 2px; margin-right: 2px;"></i>RSS</a>
+																							</p>
+										</div>
+									</fieldset>
+									<fieldset style="margin-top: 14px; padding-bottom: 4px;">
+										<legend>Помощь</legend>
+										<div class="tCenter">
+											<a class="med" href="./viewtopic.php?t=101236#0" style="font-size: 0.9rem;">Как пользоваться поиском <i class="fas fa-question faa-wrench animated animate-1-tm"></i></a>
+										</div>
+									</fieldset>
+								</div>
+							</td>
+						</tr>
+					</table>
+
+					<div class="tCenter" style="padding: 4px 0 6px;">
+						<input id="tracker-submit" class="bold clickable" type="submit" value="Поиск" style="width: 200px; margin-top: 26px; margin-bottom: 10px;" />
+					</div>
+
+				</td>
+			</tr>
+					</table>
+
+	</form>
+</div><!--/search_opt-->
+
+<script type="text/javascript">
+	$(function(){
+		$('#title-search').bind('keyup blur mouseleave', function(){
+			var disabled = (this.value != '');
+			ts_dis_selects( disabled );
+		});
+		ts_dis_selects( $('#title-search').val() != '' );
+	});
+	function ts_dis_selects (disabled) {
+		$('p.dis-if-ts').find('select, input').prop('disabled',  disabled ? 1 : 0);
+	}
+</script>
+
+<div class="spacer_6"></div>
+<div id="search-results" style="display: none;">
+
+	<table class="w100 border bw_TRL" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="cat pad_2">
+
+				<table cellspacing="0" cellpadding="0" class="borderless w100">
+					<tr>
+
+						<td class="small bold nowrap tRight" width="100%" style="padding: 2px 8px 5px 4px;">
+							&nbsp;
+							<a class="menu-root" href="#tr-options">Опции показа</a>
+						</td>
+
+					</tr>
+				</table>
+
+			</td>
+		</tr>
+	</table>
+
+	<div class="menu-sub" id="tr-options">
+		<table cellspacing="1" cellpadding="4">
+			<tr>
+				<th>Опции показа</th>
+			</tr>
+			<tr>
+				<td>
+					<fieldset id="ajax-topics">
+						<legend>Темы</legend>
+						<div class="med pad_4">
+							<label>
+								<input type="checkbox" 								onclick="user.set('tr_tm', this.checked ? 1 : 0);"
+								/>показывать время создания темы
+							</label>
+							<label>
+								<input type="checkbox" 								onclick="user.set('h_priv', this.checked ? 1 : 0);"
+								/>скрывать колонку с флагом приватного торрента
+							</label>
+							<label>
+								<input type="checkbox" 								onclick="user.set('h_acomp', this.checked ? 1 : 0);"
+								/>скрывать подсказки при поиске слов
+							</label>
+							<label>
+								<input type="checkbox" 								onclick="user.set('h_highl', this.checked ? 1 : 0);"
+								/>не подсвечивать искомый запрос в заголовках
+							</label>
+							<label>
+								<input type="checkbox" 								onclick="user.set('tr_rp', this.checked ? 1 : 0);"
+								/>показывать количество комментариев
+							</label>
+							<label>
+								<input type="checkbox" 								onclick="user.set('tr_sd', this.checked ? 1 : 0);"
+								/>обозначать сидируемые мной раздачи
+							</label>
+						</div>
+					</fieldset>
+				</td>
+			</tr>
+			<tr>
+				<td class="cat tCenter pad_4"><input type="button" value="Отправить" style="width: 100px;" onclick="window.location.reload();" /></td>
+			</tr>
+		</table>
+	</div><!--/tr-options-->
+
+	<style type="text/css">
+		#tor-tbl u { display: none; }
+		.seed-leech { padding-left: 1px; padding-right: 0; }
+		.tr_tm { margin-top: 2px; font-size: 10px; color: #676767; }
+		.ch { font-style: italic; color: #0080FF; }
+	</style>
+	<script type="text/javascript">
+		$(function(){
+			$('#tor-tbl').tablesorter(); //	{debug: true}
+		});
+	</script>
+
+	<table class="forumline tablesorter" id="tor-tbl">
+		<thead>
+		<tr>
+			<th class="{sorter: false}">&nbsp;</th>
+			<th class="{sorter: false}">&nbsp;</th>
+			<th class="{sorter: 'text'}" width="25%"><b class="tbs-text">Форум</b></th>
+			<th class="{sorter: 'text'}" width="75%"><b class="tbs-text">Тема</b></th>
+			<th class="{sorter: 'text'}"><b class="tbs-text">Автор</b></th>
+			<th class="{sorter: 'digit'}"><b class="tbs-text">Размер</b></th>
+			<th class="seed-leech {sorter: 'digit'}" title="Сиды"><b class="tbs-text">S</b></th>
+									<th class="seed-leech {sorter: 'digit'}" title="Личи"><b class="tbs-text">L</b></th>
+			<th class="{sorter: 'digit'}" title="Торрент скачан"><b class="tbs-text">C</b></th>
+									<th class="{sorter: 'digit'}" title="Приватный торрент (отключён DHT)"><b class="tbs-text"><i class="fas fa-shield-alt"></i></b></th>
+						<th class="{sorter: 'digit'}"><b class="tbs-text">Добавлен</b></th>
+		</tr>
+		</thead>
+		<tbody>
+		
+						<tr>
+			<td class="row1 tCenter pad_12" colspan="100%">Не найдено</td>
+		</tr>
+				</tbody>
+		<tfoot>
+		<tr>
+			<td class="catBottom" colspan="100%">&nbsp;</td>
+		</tr>
+		</tfoot>
+	</table>
+</div><!--/search-results-->
+
+<noscript><div class="warningBox2 bold tCenter">Для показа необходимo включить JavaScript</div></noscript>
+
+<div class="bottom_info">
+
+	<div class="nav">
+		<p style="float: left"></p>
+		<p style="float: right"></p>
+		<div class="clear"></div>
+	</div>
+
+	<div class="spacer_4"></div>
+
+	<div class="clear"></div>
+
+</div><!--/bottom_info-->
+
+<script type="text/javascript">
+	$.each( [1679,1740,1834,1752,1711], function(i,n){ $('#fs-'+ n).prop('selected', 1) });
+    $('#select-current-forums').click(function (){
+        $('#fs-main').find('option').prop('selected', 0);
+        $.each( [1679,1740,1834,1752,1711], function(i,n){
+            if (i == 0) {
+                var $s = $('#fs-main');
+
+                var optionTop = $s.find('#fs-'+ n).offset().top;
+                var selectTop = $s.offset().top;
+
+                $s.scrollTop($s.scrollTop() + (optionTop - selectTop));
+            }
+            $('#fs-'+ n).prop('selected', 1).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
+        });
+    });
+	$('#search_opt, #search-results').show();
+	var fs_last_val = [];
+	$(function(){
+				$('a.f, a.pg').each(function(){ this.href += '&nm=%3F%3F%3F%3F%3F+05'; });
+		$('a.s-all').each(function(){ this.href += '?nm=%3F%3F%3F%3F%3F+05'; });
+								// лимит на количество выбранных разделов
+		fs_last_val = $('#fs-main').val();
+
+		$('#fs-main').bind('change', function(){
+			var fs_val = $('#fs-main').val();
+			if (fs_val != null) {
+				if (fs_val.length > 75) {
+					alert('Вы можете выбрать максимум 75 разделов');
+					$('#fs-main').val( fs_last_val );
+				}
+				else {
+					fs_last_val = fs_val;
+				}
+			}
+		});
+		$('.root_forum').click(function(){
+			$(this).prop({
+				selected: 1
+			}).nextUntil(".root_forum").prop({
+				selected: 1
+			});
+		});
+				if (!is_touch_device()) {
+			$('#fs-qs-input').focus().quicksearch('#fs-main option', {
+				delay   : 300,
+				onAfter : function(){
+					$('#fs-main optgroup').show();
+					$('#fs-main option:hidden').parent('optgroup').not( $('#fs-main :visible').parent('optgroup') ).hide();
+				}
+			});
+			$('#fs-main').attr( 'size', $('#fs-main').attr('size')-1 );
+			$('#fs-qs-div').show();
+		}
+			});
+	function get_fs_link()
+	{
+		var fs_url = 'https://pornolab.net/forum/tracker.php?';
+		var fs_val = $('#fs-main').val();
+
+		if (fs_val == null) {
+			alert('Вы не выбрали разделы');
+		} else {
+			fs_url += 'f='+ fs_val.join(',');
+			window.prompt('Ссылка на выбранные разделы:', fs_url);
+		}
+		return false;
+	}
+	function get_full_link()
+	{
+		var url = 'https://pornolab.net/forum/tracker.php?';
+		var params = [];
+		var supported_inputs = ['o', 's', 'tm', 'pn', 'nm', 'oop', 'fn', 'nsd', 'mc'];
+		var fs_val = $('#fs-main').val();
+
+		$("form#tr-form :input").each(function(){
+			var name = $(this).attr('name');
+			var val  = $(this).val();
+			var is_checked = ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') ? $(this).prop('checked') : true;
+			if (name && jQuery.inArray(name, supported_inputs) != -1 && val && val != 0 && is_checked) {
+				params.push(name+'='+val);
+			}
+		});
+		url += params.join('&');
+		if (fs_val) {
+			url += '&f='+ fs_val.join(',');
+		}
+
+		window.prompt('Ссылка на этот поиск:', encodeURI(url));
+		return false;
+	}
+	function get_rss()
+	{
+		var url = 'https://pornolab.net/forum/rss.php?';
+		var params = [];
+		var supported_inputs = ['pn', 'nm', 'fn'];
+		var fs_val = $('#fs-main').val();
+
+		$("form#tr-form :input").each(function(){
+			var name = $(this).attr('name');
+			var val  = $(this).val();
+			var is_checked = ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') ? $(this).prop('checked') : true;
+			if (name && jQuery.inArray(name, supported_inputs) != -1 && val && val != 0 && is_checked) {
+				params.push(name+'='+val);
+			}
+		});
+		if (params.length > 0) {
+			url += params.join('&') + '&';
+		}
+
+		if (fs_val && fs_val[0] != -1) {
+			url += 'f='+ fs_val.join(',');
+		}
+
+		window.prompt('Ссылка на RSS:', encodeURI(url));
+		return false;
+	}
+	function copyToClipboard(txt) {
+		var $temp = $("<textarea>");
+		$("body").append($temp);
+		$temp.val(txt).select();
+		try {
+			document.execCommand("copy");
+		} catch(e) {
+			return false;
+		}
+		$temp.remove();
+		return true;
+	}
+	function copy_topics_to_clipboard ()
+	{
+		var links = [];
+		$('.tLink').each(function(){
+			var href = $(this).attr('href');
+			var topic_id = href.match(/=(\d+)/)[1];
+			if (topic_id) {
+				links.push(location.protocol + '//pornolab.net/forum/viewtopic.php?t=' + topic_id);
+			}
+		});
+
+		var txt = links.join("\r\n");
+		if (txt) {
+			if (copyToClipboard(txt)) {
+				bb_alert('скопировано<br><br>' + txt);
+			} else {
+				bb_alert('ошибка при копировании в буфер, возможно вы используете устаревший браузер');
+			}
+		} else {
+			bb_alert('нечего копировать в буфер');
+		}
+
+		return false;
+	}
+</script>
+
+<script>
+	$(function() {
+		$( "#title-search" ).autocomplete({
+			//disabled: true,
+			delay: 250,
+			source: function (request, response) {
+				if (request.term.match(/["-=]/)) {
+					response([]);
+				} else {
+					var data = {query: request.term, form_token: ajax.form_token, action: 'suggest', mode: 'title' };
+					showAjaxLoading = false;
+					$.post("/forum/ajax.php", data, function (r){
+						showAjaxLoading = true;
+						response(r.keywords);
+					}, "json");
+				}
+			},
+			minLength: 1
+		}).on( "autocompleteselect", function( event, ui ) { $("#title-search").val(ui.item.value); $('#tracker-submit').click(); } );
+	});
+</script>
+
+<script>
+"1802,1683,1815,1720,1864,1865".split(",").forEach(id => $("#fs-" + id).remove());
+</script>
+
+
+	</div><!--/main_content_wrap-->
+	</td><!--/main_content-->
+
+	
+	</tr></table>
+	</div>
+	<!--/page_content-->
+
+	<!--page_footer-->
+	<div id="page_footer">
+
+		
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var rnd = Math.round(Math.random()*1000000000);
+
+	// Text rotate
+	var i    = 0;
+	var j    = 0;
+	var t    = 'target="_blank"';
+	var bn   = [];
+	var bm   = [];
+	var url  = 'http://putana.cz/index.php?partner=9975';
+
+//		j    = 0;
+//		bm   = [];
+//		bm[j] = '<a href="http://ebistika.tv/" target="_blank"><b style="color: darkred;">Порнуха HD на Ebistika.tv</b></a>'; j++;
+//		$('#ebistika').html(bm[Math.round(Math.random()*(bm.length-1))]);
+
+	j    = 0;
+	bm   = [];
+	bm[j] = '<a href="https://mega-porno.me/categories/" target="_blank"><b style="color: red;">Мега Порно Онлайн</b></a>'; j++;
+	$('#mega').html(bm[Math.round(Math.random()*(bm.length-1))]);
+
+//	i   = 0;
+//	bn  = [];
+//	bn[i] = '<a href="https://toy69.ru/dlya-nego/masturbatory/iskusstvennoe-vlagalishche/?sort=p.price&order=ASC?utm_source=pornolab&utm_medium=textdown&utm_campaign=masturbators&utm_content=text1" target="_blank"><b style="color: darkred;">МЫ рекомендуем!!!  - Японский секс шоп</b></a>'; i++;
+//	bn[i] = '<a href="https://toy69.ru/dlya-nego/masturbatory/iskusstvennoe-vlagalishche/?sort=p.price&order=ASC?utm_source=pornolab&utm_medium=textdown&utm_campaign=masturbators&utm_content=text2" target="_blank"><b style="color: darkred;">Японский Секс Шоп !!! Pornolab рекомендует</b></a>'; i++;
+//	bn[i] = '<a href="https://toy69.ru/dlya-nego/masturbatory/iskusstvennoe-vlagalishche/?sort=p.price&order=ASC?utm_source=pornolab&utm_medium=textdown&utm_campaign=masturbators&utm_content=text3" target="_blank"><b style="color: darkred;">Мы рекомендуем!!!  - Toy69.ru</b></a>'; i++;
+//	bn[i] = '<a href="https://toy69.ru/dlya-nego/masturbatory/iskusstvennoe-vlagalishche/?sort=p.price&order=ASC?utm_source=pornolab&utm_medium=textdown&utm_campaign=masturbators&utm_content=text4" target="_blank"><b style="color: darkred;">Toy69.ru!!! ПОРНОЛАБ рекомендует</b></a>'; i++;
+//	bn[i] = '<a href="https://toy69.ru/dlya-nego/masturbatory/iskusstvennoe-vlagalishche/?sort=p.price&order=ASC?utm_source=pornolab&utm_medium=textdown&utm_campaign=masturbators&utm_content=text1" target="_blank"><b style="color: LimeGreen;">Купи ЯПОНКУ!</b></a>'; i++;
+//	$('#toy69').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+//	i   = 0;
+//	bn  = [];
+//	bn[i] = '<div style="color:#FF4F03;">ZADROCHI: 2025 sex <a href="https://zadrochi.net" target="_blank"><b style="color:#0273f1;">porn</b></a> videos online!'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Erotica 2025: seks <a href="https://xn--80apgojn8e.video" target="_blank"><b style="color:#0279f1;">erotika</b></a> video online!'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">XXX.report: 2025 porn <a href="https://xxx.report" target="_blank"><b style="color:#0259f1;">xxx</b></a> video online!'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Erotica videos: 2025 porno <a href="https://erotika.video" target="_blank"><b style="color:#0257f1;">erotika</b></a> video online!'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Porno zavod: 2025 seks <a href="https://pornozavod.ru" target="_blank"><b style="color:#0255f1;">porno</b></a> video online!'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">TubSexer: 2025 free <a href="https://tubsexer.vip" target="_blank"><b style="color:#0253f1;">porn</b></a> video online!'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">EROkrad: 2025 sex <a href="https://erokrad.ru" target="_blank"><b style="color:#0251f1;">porno</b></a> video online!'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Marcopolo-uss: 2025 xxx <a href="https://marcopolo-uss.ru" target="_blank"><b style="color:#0357f1;">porno</b></a> video online!'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Sex 2025! XXX HD: Free porn <a href="https://www.brazzer.film" target="_blank"><b style="color:#1317a2;">Brazzers</b></a>.com 2025 watch video online.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Lenta-ua: Главные <a href="https://lenta-ua.net" target="_blank"><b style="color:#0137f0;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">MaOnline: Главные <a href="https://maonline.ru" target="_blank"><b style="color:#0137f5;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Crime-Research: Главные <a href="https://crime-research.ru" target="_blank"><b style="color:#0137f6;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">OSRadio: Главные <a href="https://osradio.ru" target="_blank"><b style="color:#0137f7;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">9TV: Главные <a href="https://9tv.ru" target="_blank"><b style="color:#0137f8;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">BNN-NEWS: Главные <a href="https://bnn-news.ru" target="_blank"><b style="color:#0135f0;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Morning-News: Главные <a href="https://morning-news.ru" target="_blank"><b style="color:#0135f1;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">APN-NN: Главные <a href="https://apn-nn.ru" target="_blank"><b style="color:#0135f2;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">RosRegistr: Главные <a href="http://rosregistr.ru" target="_blank"><b style="color:#0135f3;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Oxpaha: Главные <a href="https://oxpaha.ru" target="_blank"><b style="color:#0135f5;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Itartass-Sib: Главные <a href="http://itartass-sib.ru" target="_blank"><b style="color:#0135f7;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">I-Stroy: Главные <a href="https://www.i-stroy.ru" target="_blank"><b style="color:#0135f8;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">Fresher: Главные <a href="https://www.fresher.ru" target="_blank"><b style="color:#0135f9;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">MoscowOUT: Главные <a href="https://www.moscowout.ru" target="_blank"><b style="color:#0133f9;">новости</b></a> сегодня.</div>'; i++;
+//	bn[i] = '<div style="color:#FF4F03;">E-Rus: Главные <a href="https://e-rus.ru" target="_blank"><b style="color:#0132f7;">новости</b></a> сегодня.</div>'; i++;
+//	$('#brazzer').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+	i    = 0;
+	bn   = [];
+	bn[i] = '<a href="//pornolab.net/forum/info.php?show=advert" target="_blank"><b style="color: blue;">Здесь могла бы быть ваша реклама!</b></a>'; i++;
+	$('#advert').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+	i    = 0;
+	bn   = [];
+	bn[i] = '<a href="https://www.24xxx.me/katu/" target="_blank"><b style="color: blue;">СМОТРИ НОВОЕ ПОРНО ВИДЕО ТУТ: www.24xxx.me</b></a>'; i++;
+	$('#24xxx').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+//	j    = 0;
+//	bm   = [];
+//	bm[j] = '<a href="https://zen.yandex.ru/media/id/5eb86dfaf5177f4668b8ac68/emercoin--blokchein-i-servisy-industrialnogo-urovnia-61774747c7e7c051c1911913" target="_blank"><b style="color: blue;">Блокчейн-сервисы индустриального уровня</b></a>'; j++;
+//	bm[j] = '<a href="https://zen.yandex.ru/media/id/5eb86dfaf5177f4668b8ac68/kak-obogatitsia-na-treidinge-6147d9b59d150d6120097500" target="_blank"><b style="color: blue;">Как обогатиться на трейдинге</b></a>'; j++;
+//	bm[j] = '<a href="https://zen.yandex.ru/media/id/5eb86dfaf5177f4668b8ac68/emerdns-platforma-dlia-interneta-bez-cenzury-613e88a0f4c485538e21f02a" target="_blank"><b style="color: blue;">Как обогатиться на трейдинге</b></a>'; j++;
+//	bm[j] = '<a href="https://zen.yandex.ru/media/id/5eb86dfaf5177f4668b8ac68/blokchein-protiv-blokirovok-61367c945a15184a849007e8" target="_blank"><b style="color: blue;">Блокчейн против блокировок</b></a>'; j++;
+//	$('#emercoin').html(bm[Math.round(Math.random()*(bm.length-1))]);
+
+//	i    = 0;
+//	bn   = [];
+//	if (document.location.pathname == "/forum/index.php") {
+//		bn[i] = '<a href="http://vsexshop.ru" '+t+'><b style="color: red;">Секс шоп с доставкой товаров по Москве и России</b></a>'; i++;
+//	} else {
+//		bn[i] = '<a href="http://vsexshop.ru/store/index/5-vibratory" '+t+'><b style="color: red;">Вибратор с доставкой по Москве и России</b></a>'; i++;
+//		bn[i] = '<a href="http://vsexshop.ru/store/index/25-eroticheskoe-zhenskoe-intimnoe-bele" '+t+'><b style="color: red;">Женское эротическое белье</b></a>'; i++;
+//	}
+//	//bn[i] = '<a href="http://vsexshop.ru/store/index/25-eroticheskoe-zhenskoe-intimnoe-bele" '+t+'><b style="color: red;">Эротическое белье, женское и мужское</b></a>'; i++;
+//	//bn[i] = '<a href="http://vsexshop.ru/store/index/12-lyubrikanty-smazki" '+t+'><b style="color: red;">Смазки для секса</b></a>'; i++;
+//	$('#vsexshop-1').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+	i    = 0;
+	bn   = [];
+	bn[i] = '<a href="https://bigboss.video/kategorii/" target="_blank"><b style="color: red;">Новое порно видео 2024</b></a>'; i++;
+	$('#bigboss').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+//	j   = 0;
+//	bm  = [];
+//	bm[j] = '<a href="http://ilinker.n6611.hostest.ru/lp.php?p=1&o=1&c=1" target="_blank"><b style="color: darkred;">Увидел баннер - получи за это деньги!</b></a>'; j++;
+//	bm[j] = '<a href="http://ilinker.n6611.hostest.ru/lp.php?p=1&o=2&c=1" target="_blank"><b style="color: darkred;">Броди по любимым сайтам и получай за это деньги!</b></a>'; j++;
+//	bm[j] = '<a href="http://ilinker.n6611.hostest.ru/lp.php?p=1&o=3&c=1" target="_blank"><b style="color: darkred;">Хочешь продать свой взгляд за живые деньги?</b></a>'; j++;
+//	bm[j] = '<a href="http://ilinker.n6611.hostest.ru/lp.php?p=2&o=1&c=2" target="_blank"><b style="color: darkred;">Получить займ на карту за 15 минут онлайн</b></a>'; j++;
+//	bm[j] = '<a href="http://ilinker.n6611.hostest.ru/lp.php?p=2&o=2&c=2" target="_blank"><b style="color: darkred;">Оформить займ онлайн. Быстро!</b></a>'; j++;
+//	$('#surfearner').html(bm[Math.round(Math.random()*(bm.length-1))]);
+
+	i    = 0;
+	bn   = [];
+	bn[i] = '<b style="color: blue;">Photo collection of pornstars <a href="https://www.pornpics.com/pornstars/ " target="_blank">- PornPics</a></b>'; i++;
+	$('#pornpics').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+	i    = 0;
+	bn   = [];
+	bn[i] = '<a href="https://www.pornozavod.cc/categories/" target="_blank"><b style="color: DeepPink;">Порно завод</b></a>'; i++;
+	$('#pornozavod').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+	i    = 0;
+	bn   = [];
+	bn[i] = '<a href="https://t.me/HiroVpnBot?start=secret" target="_blank"><b style="color: blue;">Безопасный VPN без логов и утечек. Работает в РФ / Secure VPN. No logs. No leaks</b></a>'; i++;
+	$('#hirovpn').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+	i    = 0;
+	bn   = [];
+	bn[i] = '<b style="color: DeepPink;">Naked Girls & Nude Women Photos on <a href="https://naked.pics/" target="_blank">Naked.Pics</a></b>'; i++;
+	$('#nakedpics').html(bn[Math.round(Math.random()*(bn.length-1))]);
+
+});
+</script>
+
+<div class="tCenter nowrap mrg_12">
+	<table style="margin: 8px auto 6px;"><tr>
+		<td id="mega"></td>
+	</tr></table>
+</div>
+
+<div class="tCenter nowrap mrg_12">
+	<table style="margin: 8px auto 6px;"><tr>
+		<td id="24xxx"></td>
+	</tr></table>
+</div>
+
+<div class="tCenter nowrap mrg_12">
+	<table style="margin: 8px auto 6px;"><tr>
+		<td id="bigboss"></td>
+	</tr></table>
+</div>
+
+<div class="tCenter nowrap mrg_12">
+	<table style="margin: 8px auto 6px;"><tr>
+		<td id="pornpics"></td>
+	</tr></table>
+</div>
+
+<div class="tCenter nowrap mrg_12">
+	<table style="margin: 8px auto 6px;"><tr>
+		<td id="pornozavod"></td>
+	</tr></table>
+</div>
+
+<div class="tCenter nowrap mrg_12">
+	<table style="margin: 8px auto 6px;"><tr>
+		<td id="hirovpn"></td>
+	</tr></table>
+</div>
+
+<div class="tCenter nowrap mrg_12">
+	<table style="margin: 8px auto 6px;"><tr>
+		<td id="nakedpics"></td>
+	</tr></table>
+</div>
+
+
+		<div style="margin: 6px; padding: 8px; border: 1px solid #B7C0C5;">
+			<table style="margin: 8px auto 6px;"><tr>
+								<td valign="top"><div><a href="https://vsexshop.ru/store/index/66"><img src="https://vpipi.com/assets/plab/new_pack_BDSM_468x60.gif" /></a></div></td>
+				<td>&nbsp;</td>
+				<td valign="top"><div><a href="https://vsexshop.ru/store/index/1"><img src="https://vpipi.com/assets/plab/p468.gif" /></a></div></td>
+			</tr></table>
+			<script>
+$(function () {
+	var imgMaxWidth = $(window).width() - 50;
+	$('#bn-page-bottom-block').css({
+		'max-width': imgMaxWidth + 'px'
+	});
+});
+</script>
+<div style="width: 98%; margin: auto 0; text-align: center;">
+<iframe scrolling="no" frameborder="0" width="1400" height="245" src="https://dynspt.com/promo.php?c=825616&type=dynamic_banner&new_banner=0&db%5Bwidth%5D=1400&db%5Bheight%5D=245&db%5Btype%5D=live&db%5Bmodel_zone%5D=free&db%5Bheader%5D=0&db%5Bfooter%5D=footer_text_5&db%5Bmlang%5D=0&db%5Bfullscreen%5D=&db%5Bmname%5D=1&db%5Bmlink%5D=1&db%5Bmstatus%5D=1&db%5Bmsize%5D=auto&db%5Bmpad%5D=15&db%5Bmwidth%5D=156&db%5Bcolor_scheme%5D=default&db%5Bmborder%5D=none&db%5Bmborder_color%5D=%23ffffff&db%5Bmborder_over_color%5D=%23a02239&db%5Bmshadow%5D=0&db%5Bmodels_by_geo%5D=0&db%5Bautoupdate%5D=1&db%5Btopmodels%5D=1&db%5Blanding%5D=chat&db%5Blogo_color%5D=default&db%5Blogo_align%5D=left&db%5Bbg_color%5D=none&db%5Bfont_family%5D=Arial&db%5Btext_align%5D=center&db%5Btext_color%5D=%230066ff&db%5Blink_color%5D=%23ff002f&db%5Beffect%5D=auto&db%5Beffect_speed%5D=optimal&db%5Bmode%5D=mode1&db%5Badaptive%5D=0&db%5Bslider%5D=0&db%5Bchat%5D=0"></iframe>
+</div>		</div>
+
+		
+		<div class="clear"></div>
+
+		<br />
+
+				<div class="med bold tCenter pad_4">
+			<a href="info.php?show=user_agreement" onclick="window.open(this.href, '', InfoWinParams); return false;">Пользовательское Соглашение</a>
+									<span class="normal">&nbsp;|&nbsp;</span>
+			<a href="info.php?show=reg_problems" onclick="window.open(this.href, '', InfoWinParams); return false;">При проблемах с регистрацией</a>
+									<span class="normal">&nbsp;|&nbsp;</span>
+			<a href="viewtopic.php?t=2947333" target="_blank">Помощь ресурсу</a>
+									<span class="normal">&nbsp;|&nbsp;</span>
+			<a href="info.php?show=advert" onclick="window.open(this.href, '', InfoWinParams); return false;">Реклама на сайте</a>
+					</div>
+		<br />
+		
+		
+		<table width="99%" cellpadding="0" cellspacing="0" class="bCenter">
+		<tr>
+
+			<td width="50%" class="vBottom">
+				<div class="copyright">
+					<p><a href="groupcp.php?g=104792">Координаторы</a> &middot; <a href="groupcp.php?g=104787">Модераторы</a> &middot; <a href="groupcp.php?g=104841">Техническая помощь</a></p>
+				</div>
+			</td>
+			<td class="vBottom">
+
+						<table class="bCenter" cellspacing="0" cellpadding="2" border="0">
+			<tr>
+				<td class="vBottom nowrap" style="padding: 0 4px;">
+
+					<!--LiveInternet counter-->
+					<script type="text/javascript">
+						document.write('<a href="//www.liveinternet.ru/stat/pornolab.net/" '+ 'target=_blank><img src="//counter.yadro.ru/hit?t14.6;r'+escape(document.referrer)+((typeof(screen)=='undefined')?'':';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?screen.colorDepth:screen.pixelDepth))+';'+Math.random()+'" alt="liveinternet.ru" '+'border=0 width=88 height=31></a>');
+					</script>
+					<!--/LiveInternet-->
+					
+
+				</td>
+			</tr>
+			</table>
+
+			
+			</td>
+			 <td width="50%" class="vBottom" style="text-align: right !important;">
+					<div style="font-size: 10px; color: #444444; letter-spacing: -1px;">
+					    &nbsp;
+					    <b><a href="https://5porno.pro/categories/">HD порно ролики 5porno.pro</a></b>
+					    &nbsp;
+					    Новое порно на <b><a href="http://porno365.plus/categories">Порно 365</a></b>
+					    &nbsp;
+					    <b><a href="http://www.mega-xxx.tv/categories/">mega-xxx.tv</a></b>
+					    &nbsp;
+					    <b><a href="https://toy69.ru/dlya-nego/masturbatory/iskusstvennoe-vlagalishche/?sort=p.price?der=ASC?utm_source=pornolab&utm_medium=textdown&utm_campaign=masturbators&utm_content=text1
+">Тут продаются японочки</a></b>
+					    &nbsp;
+					    <b><a href="https://www.topfapgirls.com/">TopFapGirls</a></b> is the best OnlyFans leaks
+					    &nbsp;
+					    <b><a href="https://thepornplus.com">Порно видео</a></b>
+					</div>
+			</td>
+		</tr>
+		</table>
+
+	</div>
+	<!--/page_footer-->
+
+	</div>
+	<!--/page_container-->
+
+
+
+
+
+
+<div id="ajax-loading"><b>Loading...</b></div>
+<div id="ajax-error"><b>Error</b></div>
+<style>
+#bb-alert-box {
+	width: auto;
+	max-width: 800px;
+	line-height: 18px;
+	display: none;
+}
+#bb-alert-msg {
+	min-width: 400px;
+	max-height: 400px;
+	margin: 50px 20px;
+	padding: 10px;
+	overflow: auto;
+	text-align: center;
+}
+.bb-alert-err {
+	color: #7E0000;
+	background: #FFEEEE;
+	box-shadow: 0 0 20px #B85353;
+	font-weight: bold;
+}
+</style>
+<div id="bb-alert-box">
+	<div id="bb-alert-msg"></div>
+</div>
+<div id="modal-blocker"></div>
+
+	</div><!--/body_container-->
+
+</body>
+</html>
