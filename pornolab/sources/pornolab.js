@@ -179,6 +179,6 @@ export default new class PornoLab extends AbstractSource {
    * @returns {Promise<boolean>}
    */
   async validate() {
-    return true
+    return false
   }
 }()
