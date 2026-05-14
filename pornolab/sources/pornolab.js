@@ -57,7 +57,7 @@ export default new class PornoLab extends AbstractSource {
    * @returns {Promise<Response>}
    */
   #fetch(url) {
-    const proxyUrl = `http://127.0.0.1:5000/proxy?b64url=${btoa(url)}`
+    const proxyUrl = `http://127.0.0.1:5000/proxy?b64url=${encodeURIComponent(btoa(url))}`
     
     const headers = {
       'X-Proxy-User-Agent': this.settings.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
