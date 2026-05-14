@@ -1,11 +1,14 @@
 [
   {
-    "main": "gh:Spithskia/Shiru-Extensions/nekosearch"
+    "main": "gh:Alrgon/Shiru-pornolab/nekosearch"
   },
   {
-	"main": "gh:Spithskia/Shiru-Extensions/nyaasearch"
+    "main": "gh:Alrgon/Shiru-pornolab/nyaasearch"
   },
   {
-	"main": "gh:Spithskia/Shiru-Extensions/anisearch"
+    "main": "gh:Alrgon/Shiru-pornolab/anisearch"
+  },
+  {
+    "main": "gh:Alrgon/Shiru-pornolab/pornolab"
   }
 ]
