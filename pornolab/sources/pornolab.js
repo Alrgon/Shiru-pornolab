@@ -67,6 +67,7 @@ export default new class PornoLab extends AbstractSource {
     }
     return fetch(url, {
       headers,
+      credentials: 'omit',
       redirect: 'follow'
     })
   }
@@ -183,6 +184,16 @@ export default new class PornoLab extends AbstractSource {
    * @returns {Promise<boolean>}
    */
   async validate() {
-    return true; // Просто всегда возвращаем true
+    try {
+      if (!this.settings.cookie) return false
+      const res = await this.#fetch(`${BASE_URL}/index.php`)
+      if (!res.ok) return false
+      const buffer = await res.arrayBuffer()
+      const html = decodeWindows1251(buffer)
+      // Check if we are logged in by looking for a logout link
+      return html.includes('logout')
+    } catch {
+      return false
+    }
   }
 }()
