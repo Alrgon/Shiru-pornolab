@@ -93,10 +93,10 @@ export default new class PornoLab extends AbstractSource {
    * @returns {import('../').TorrentResult}
    */
   #map (torrent, batch = false) {
-    // Construct the full download link
+    // Download link is relative like "dl.php?t=1514033"
     const downloadLink = torrent.downloadLink.startsWith('http')
       ? torrent.downloadLink
-      : `${BASE_URL}/${torrent.downloadLink.replace(/^\/?(forum\/)?/, '')}`
+      : `${BASE_URL}/${torrent.downloadLink.replace(/^\.?\/?/, '')}`
 
     return {
       title: torrent.title,

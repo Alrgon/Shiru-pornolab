@@ -11,43 +11,6 @@ export function decodeWindows1251 (buffer) {
 }
 
 /**
- * Converts a size string from PornoLab format to bytes.
- * PornoLab returns size in bytes as a plain number inside <u> tags,
- * but may also use human-readable formats.
- *
- * @param {string} size
- * @returns {number}
- */
-export function convertSizeToBytes (size) {
-  if (!size) return 0
-  const trimmed = size.trim()
-
-  // If it's a plain number (bytes), return directly
-  const num = Number(trimmed)
-  if (!isNaN(num)) return num
-
-  // Handle human-readable sizes like "1.5 GB", "500 MB", etc.
-  const match = trimmed.match(/^([\d.]+)\s*(TB|GB|MB|KB|B|ТБ|ГБ|МБ|КБ|Б)$/i)
-  if (!match) return 0
-  const value = parseFloat(match[1])
-  const unit = match[2].toUpperCase()
-  switch (unit) {
-    case 'TB': case 'ТБ':
-      return value * 1024 * 1024 * 1024 * 1024
-    case 'GB': case 'ГБ':
-      return value * 1024 * 1024 * 1024
-    case 'MB': case 'МБ':
-      return value * 1024 * 1024
-    case 'KB': case 'КБ':
-      return value * 1024
-    case 'B': case 'Б':
-      return value
-    default:
-      return 0
-  }
-}
-
-/**
  * Decodes HTML entities in a string.
  *
  * @param {string} text
@@ -67,8 +30,8 @@ export function decodeEntities (text) {
 /**
  * @typedef {Object} PornolabTorrent
  * @property {string} title
- * @property {string} topicLink - link to the topic page
- * @property {string} downloadLink - link to download the .torrent file
+ * @property {string} topicLink - relative link to the topic page e.g. "./viewtopic.php?t=..."
+ * @property {string} downloadLink - relative link to download e.g. "dl.php?t=..."
  * @property {number} size - size in bytes
  * @property {number} seeders
  * @property {number} leechers
@@ -78,7 +41,33 @@ export function decodeEntities (text) {
 
 /**
  * Parses the tracker.php results HTML table from PornoLab.
- * Based on Jackett selector: table#tor-tbl > tbody > tr:has(a.tr-dl)
+ *
+ * Real HTML structure (from live site analysis):
+ * <table id="tor-tbl">
+ *   <tbody>
+ *     <tr class="tCenter">
+ *       <td class="row1"><!-- status icon --></td>
+ *       <td class="row1 tCenter"><!-- approved icon --></td>
+ *       <td class="row1"><a class="gen f" href="tracker.php?f=...">Category</a></td>
+ *       <td class="row4 med tLeft u">
+ *         <div><a class="med tLink bold" href="./viewtopic.php?t=...">TITLE</a></div>
+ *       </td>
+ *       <td class="row1"><a href="tracker.php?pid=...">author</a></td>
+ *       <td class="row4 small nowrap">
+ *         <u>SIZE_IN_BYTES</u>
+ *         <a class="small tr-dl dl-stub" href="dl.php?t=...">1.84 GB</a>
+ *       </td>
+ *       <td class="row4 seedmed"><u>SEEDERS</u><b class="seedmed">SEEDERS</b></td>
+ *       <td class="row4 leechmed"><b>LEECHERS</b></td>
+ *       <td class="row4 small">DOWNLOADS</td>
+ *       <td class="row4 small"><u>0_or_1</u></td>  <!-- private flag -->
+ *       <td class="row4 small nowrap" title="Добавлен">
+ *         <u>UNIX_TIMESTAMP</u>
+ *         <p>HH:MM</p><p>DD-Mon-YY</p>
+ *       </td>
+ *     </tr>
+ *   </tbody>
+ * </table>
  *
  * @param {string} html - the HTML content of the tracker page
  * @returns {PornolabTorrent[]}
@@ -86,14 +75,8 @@ export function decodeEntities (text) {
 export function parseTrackerPage (html) {
   const results = []
 
-  // Extract the tracker table body
-  const tableMatch = html.match(/<table[^>]*id=["']?tor-tbl["']?[^>]*>([\s\S]*?)<\/table>/i)
-  if (!tableMatch) return results
-
-  const tableHtml = tableMatch[1]
-
-  // Find tbody content
-  const tbodyMatch = tableHtml.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/i)
+  // Extract the tbody of tor-tbl
+  const tbodyMatch = html.match(/id=["']?tor-tbl["']?[\s\S]*?<tbody[^>]*>([\s\S]*?)<\/tbody>/i)
   if (!tbodyMatch) return results
 
   const tbodyHtml = tbodyMatch[1]
@@ -102,9 +85,9 @@ export function parseTrackerPage (html) {
   const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi
   let rowMatch
   while ((rowMatch = rowRegex.exec(tbodyHtml)) !== null) {
-    const rowHtml = rowMatch[1]
+    const rowHtml = rowMatch[0]
 
-    // Only process rows that have a download link (a.tr-dl)
+    // Only process rows that have a download link (tr-dl class)
     if (!rowHtml.includes('tr-dl')) continue
 
     const torrent = parseRow(rowHtml)
@@ -121,51 +104,42 @@ export function parseTrackerPage (html) {
  * @returns {PornolabTorrent|null}
  */
 function parseRow (rowHtml) {
-  // Extract all cells
-  const cellRegex = /<td[^>]*>([\s\S]*?)<\/td>/gi
-  const cells = []
-  let cellMatch
-  while ((cellMatch = cellRegex.exec(rowHtml)) !== null) {
-    cells.push(cellMatch[1])
-  }
+  // Title: <a class="med tLink bold" href="./viewtopic.php?t=...">TITLE</a>
+  const titleMatch = rowHtml.match(/<a[^>]*class=["'][^"']*tLink[^"']*["'][^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/i)
+    || rowHtml.match(/<a[^>]*href=["']([^"']+)["'][^>]*class=["'][^"']*tLink[^"']*["'][^>]*>([\s\S]*?)<\/a>/i)
 
-  if (cells.length < 10) return null
+  if (!titleMatch) return null
 
-  // Title: a.tLink
-  const titleMatch = rowHtml.match(/<a[^>]*class=["'][^"']*tLink[^"']*["'][^>]*>([\s\S]*?)<\/a>/i)
-  const title = titleMatch ? decodeEntities(titleMatch[1].replace(/<[^>]*>/g, '').trim()) : null
+  const topicLink = titleMatch[1]
+  // Strip inner HTML tags (like <b>highlighted</b> from search) and decode entities
+  const title = decodeEntities(titleMatch[2].replace(/<[^>]*>/g, '').trim())
   if (!title) return null
 
-  // Topic link: a.tLink href
-  const topicLinkMatch = rowHtml.match(/<a[^>]*class=["'][^"']*tLink[^"']*["'][^>]*href=["']([^"']+)["']/i)
-    || rowHtml.match(/<a[^>]*href=["']([^"']+)["'][^>]*class=["'][^"']*tLink[^"']*["']/i)
-  const topicLink = topicLinkMatch ? topicLinkMatch[1] : ''
-
-  // Download link: a.tr-dl href
+  // Download link: <a class="small tr-dl dl-stub" href="dl.php?t=...">
   const dlMatch = rowHtml.match(/<a[^>]*class=["'][^"']*tr-dl[^"']*["'][^>]*href=["']([^"']+)["']/i)
     || rowHtml.match(/<a[^>]*href=["']([^"']+)["'][^>]*class=["'][^"']*tr-dl[^"']*["']/i)
   const downloadLink = dlMatch ? dlMatch[1] : ''
 
-  // Size: td:nth-child(6) u — stored in bytes as text inside <u> tag
-  const sizeHtml = cells[5] || ''
-  const sizeMatch = sizeHtml.match(/<u>([^<]+)<\/u>/i)
-  const size = sizeMatch ? convertSizeToBytes(sizeMatch[1]) : 0
+  // Size in bytes: <td class="..."><u>SIZE_IN_BYTES</u><a class="tr-dl...">
+  // The <u> tag BEFORE the tr-dl link contains the size in bytes
+  const sizeMatch = rowHtml.match(/<td[^>]*class=["'][^"']*small nowrap[^"']*["'][^>]*>\s*<u>(\d+)<\/u>/i)
+  const size = sizeMatch ? parseInt(sizeMatch[1]) || 0 : 0
 
-  // Seeders: td.seedmed > b
-  const seedersMatch = rowHtml.match(/<td[^>]*class=["'][^"']*seedmed[^"']*["'][^>]*>[\s\S]*?<b>([\d]+)<\/b>/i)
+  // Seeders: <td class="row4 seedmed"><u>N</u><b class="seedmed">N</b></td>
+  const seedersMatch = rowHtml.match(/<td[^>]*class=["'][^"']*seedmed[^"']*["'][^>]*>[\s\S]*?<b[^>]*>(\d+)<\/b>/i)
   const seeders = seedersMatch ? parseInt(seedersMatch[1]) || 0 : 0
 
-  // Leechers: td.leechmed > b
-  const leechersMatch = rowHtml.match(/<td[^>]*class=["'][^"']*leechmed[^"']*["'][^>]*>[\s\S]*?<b>([\d]+)<\/b>/i)
+  // Leechers: <td class="row4 leechmed" title="Личи"><b>N</b></td>
+  const leechersMatch = rowHtml.match(/<td[^>]*class=["'][^"']*leechmed[^"']*["'][^>]*>[\s\S]*?<b[^>]*>(\d+)<\/b>/i)
   const leechers = leechersMatch ? parseInt(leechersMatch[1]) || 0 : 0
 
-  // Downloads (grabs): td:nth-child(9)
-  const downloadsHtml = cells[8] || ''
-  const downloadsNum = parseInt(downloadsHtml.replace(/<[^>]*>/g, '').trim()) || 0
+  // Downloads: plain number in <td class="row4 small">N</td> (9th column, no sub-tags)
+  const downloadsMatch = rowHtml.match(/<td[^>]*class=["']row4 small["'][^>]*>(\d+)<\/td>/i)
+  const downloads = downloadsMatch ? parseInt(downloadsMatch[1]) || 0 : 0
 
-  // Date: td:nth-child(11) u — unix timestamp
-  const dateHtml = cells[10] || ''
-  const dateMatch = dateHtml.match(/<u>([^<]+)<\/u>/i)
+  // Date unix timestamp: <td ... title="Добавлен"><u>TIMESTAMP</u>
+  const dateMatch = rowHtml.match(/title=["'][^"']*[Дд]обавлен[^"']*["'][^>]*>[\s\S]*?<u>(\d+)<\/u>/i)
+    || rowHtml.match(/<td[^>]*title=["'][^"']*[Дд]обавлен[^"']*["'][\s\S]*?<u>(\d+)<\/u>/i)
   const date = dateMatch ? parseInt(dateMatch[1]) || 0 : 0
 
   return {
@@ -175,7 +149,7 @@ function parseRow (rowHtml) {
     size,
     seeders,
     leechers,
-    downloads: downloadsNum,
+    downloads,
     date
   }
 }
