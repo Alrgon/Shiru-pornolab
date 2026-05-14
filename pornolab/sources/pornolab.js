@@ -58,7 +58,7 @@ export default new class PornoLab extends AbstractSource {
    */
   #fetch(url) {
     const headers = {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+      'User-Agent': this.settings.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
     }
     if (this.settings.cookie) {
       // Note: 'Cookie' is a forbidden header in browser fetch API and is silently ignored.
@@ -189,7 +189,6 @@ export default new class PornoLab extends AbstractSource {
       if (!res.ok) return false
       const buffer = await res.arrayBuffer()
       const html = decodeWindows1251(buffer)
-      // Check if we are logged in by verifying the login form is absent
       return !html.includes('name="login_username"')
     } catch {
       return false

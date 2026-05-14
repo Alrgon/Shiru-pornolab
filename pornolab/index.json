@@ -24,6 +24,14 @@
         "placeholder": "bb_data=xxx-xxx-xxx..."
       },
       {
+        "type": "text",
+        "key": "userAgent",
+        "label": "User-Agent",
+        "description": "User-Agent вашего браузера (необходимо для работы сессии, иначе PornoLab сбросит авторизацию). Скопируйте из заголовков запроса там же, где брали Cookie.",
+        "required": true,
+        "placeholder": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)..."
+      },
+      {
         "type": "multiselect",
         "key": "categories",
         "label": "Categories",
