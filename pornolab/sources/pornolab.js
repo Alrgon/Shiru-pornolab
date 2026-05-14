@@ -67,7 +67,6 @@ export default new class PornoLab extends AbstractSource {
     }
     return fetch(url, {
       headers,
-      credentials: 'omit',
       redirect: 'follow'
     })
   }
