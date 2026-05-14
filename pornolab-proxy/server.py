@@ -6,11 +6,14 @@ app = Flask(__name__)
 # Разрешаем CORS, так как Shiru будет стучаться из своего домена/webview
 CORS(app)
 
+import base64
+
 @app.route('/proxy', methods=['GET'])
 def proxy():
-    url = request.args.get('url')
-    if not url:
-        return "Missing url parameter", 400
+    b64url = request.args.get('b64url')
+    if not b64url:
+        return "Missing b64url parameter", 400
+    url = base64.b64decode(b64url).decode('utf-8')
 
     # Получаем куки и User-Agent от плагина Shiru
     user_agent = request.headers.get('X-Proxy-User-Agent', '')
@@ -22,6 +25,7 @@ def proxy():
     }
 
     try:
+        print(f"Fetching URL: {url}")
         # Делаем настоящий запрос к PornoLab
         resp = requests.get(url, headers=headers, timeout=15)
         # Отдаем сырой HTML (байты) обратно в плагин
