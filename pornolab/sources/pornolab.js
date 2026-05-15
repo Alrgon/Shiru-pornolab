@@ -95,7 +95,7 @@ export default new class PornoLab extends AbstractSource {
       ? torrent.downloadLink
       : `${BASE_URL}/${torrent.downloadLink.replace(/^\.?\/?/, '')}`
 
-    const proxyLink = `http://127.0.0.1:5000/proxy?b64url=${encodeURIComponent(btoa(downloadLink))}&cookie=${encodeURIComponent(this.settings.cookie || '')}&ua=${encodeURIComponent(this.settings.userAgent || '')}`
+    const proxyLink = `http://127.0.0.1:5000/proxy?b64url=${encodeURIComponent(btoa(downloadLink))}&cookie=${encodeURIComponent(this.settings.cookie || '')}&ua=${encodeURIComponent(this.settings.userAgent || '')}&ext=.torrent`
 
     return {
       title: torrent.title,
@@ -103,7 +103,8 @@ export default new class PornoLab extends AbstractSource {
       seeders: torrent.seeders,
       leechers: torrent.leechers,
       downloads: torrent.downloads,
-      hash: torrent.downloadLink.match(/t=(\d+)/)?.[1] || btoa(torrent.title), // Unique hash for React rendering
+      hash: '', // Must be empty so Shiru downloads the .torrent file instead of using magnet
+      id: Number(torrent.downloadLink.match(/t=(\d+)/)?.[1] || 0), // Unique ID to prevent React deduplication
       size: torrent.size,
       accuracy: 'low',
       type: batch ? 'batch' : undefined,
